@@ -119,6 +119,6 @@ export async function refreshCsrfToken() {
   });
 
   if (!response.ok) {
-    throw new Error('Não foi possível preparar a proteção de acesso.');
+    throw new Error('Não foi possível preparar a proteção CSRF.');
   }
 }

@@ -22,6 +22,19 @@ function formatSyncedAt(value) {
   return formatBrazilDateTime(value);
 }
 
+function getSyncStatusLabel(status) {
+  const labels = {
+    failed: 'Atenção necessária',
+    idle: 'Aguardando atualização',
+    running: 'Atualizando',
+    skipped: 'Sem nova atualização',
+    synced: 'Em dia',
+    syncing: 'Atualizando',
+  };
+
+  return labels[status] ?? 'Status indisponível';
+}
+
 export function WorldCupDataPage() {
   const [diagnostic, setDiagnostic] = useState(null);
   const [groups, setGroups] = useState([]);
@@ -180,7 +193,7 @@ export function WorldCupDataPage() {
         </nav>
         {syncStatus?.sync && (
           <div className="sync-status-strip">
-            <span>Atualização: <strong>{syncStatus.sync.status === 'synced' ? 'Em dia' : syncStatus.sync.status === 'failed' ? 'Atenção necessária' : 'Em andamento'}</strong></span>
+            <span>Atualização: <strong>{getSyncStatusLabel(syncStatus.sync.status)}</strong></span>
             {syncStatus.sync.last_error && <span>Última mensagem: <strong>{syncStatus.sync.last_error}</strong></span>}
           </div>
         )}
