@@ -11,7 +11,7 @@ class ReconcileWorldCupData extends Command
 {
     protected $signature = 'world-cup:reconcile {--shortcut=} {--season=}';
 
-    protected $description = 'Reconciliacao diaria essencial dos dados da Copa e apuracao de palpites.';
+    protected $description = 'Reconciliação diária essencial dos dados da Copa e apuração de palpites.';
 
     public function handle(SyncWorldCupDataAction $sync, ScoreFinishedPredictionsAction $score): int
     {
@@ -31,7 +31,7 @@ class ReconcileWorldCupData extends Command
             return self::FAILURE;
         }
 
-        $this->info('Reconciliacao concluida com status '.$result['status'].'.');
+        $this->info('Reconciliação concluída com status '.$result['status'].'.');
         $this->line('Partidas: '.$result['matches']);
         $this->line('Palpites apurados: '.$scored);
 

@@ -19,7 +19,7 @@ class JoinPublicLeagueAction
 
             if ($lockedLeague->visibility !== 'public' || $lockedLeague->join_policy !== 'open') {
                 throw ValidationException::withMessages([
-                    'league' => 'Esta liga nao aceita entrada publica.',
+                    'league' => 'Esta liga não aceita entrada pública.',
                 ]);
             }
 
@@ -33,19 +33,19 @@ class JoinPublicLeagueAction
     {
         if ($league->status !== 'open') {
             throw ValidationException::withMessages([
-                'league' => 'Esta liga nao esta aberta para novos participantes.',
+                'league' => 'Esta liga não está aberta para novos participantes.',
             ]);
         }
 
         if ($league->members()->where('user_id', $user->id)->exists()) {
             throw ValidationException::withMessages([
-                'league' => 'Voce ja participa desta liga.',
+                'league' => 'Você já participa desta liga.',
             ]);
         }
 
         if ($league->activeMembers()->count() >= $league->max_members) {
             throw ValidationException::withMessages([
-                'league' => 'Esta liga ja esta cheia.',
+                'league' => 'Esta liga já está cheia.',
             ]);
         }
 

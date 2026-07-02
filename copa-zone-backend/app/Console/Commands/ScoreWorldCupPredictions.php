@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class ScoreWorldCupPredictions extends Command
 {
-    protected $signature = 'world-cup:score-predictions {--rescore : Reapurar tambem palpites ja apurados}';
+    protected $signature = 'world-cup:score-predictions {--rescore : Reapurar também palpites já apurados}';
 
     protected $description = 'Apura palpites de partidas finalizadas e recalcula rankings das ligas afetadas.';
 

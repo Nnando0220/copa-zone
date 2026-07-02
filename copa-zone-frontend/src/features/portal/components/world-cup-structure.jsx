@@ -31,7 +31,7 @@ import {
 } from './world-cup-contracts';
 
 function formatDate(value) {
-  return value ? formatBrazilDateTime(value) : 'Horario a definir';
+  return value ? formatBrazilDateTime(value) : 'Horário a definir';
 }
 
 export function teamLabel(team, fallback) {
@@ -77,7 +77,7 @@ function resultDetailLabel(match) {
   }
 
   if (match.winner_source === 'extra_time') {
-    return 'Vencedor na prorrogacao';
+    return 'Vencedor na prorrogação';
   }
 
   return match.winner_source === 'tiebreaker' ? 'Vencedor definido no desempate' : null;
@@ -345,8 +345,8 @@ export function GroupStandingsTable({ standings = [] }) {
     },
     {
       id: 'team',
-      header: 'Selecao',
-      cell: ({ row }) => row.original.team?.display_name || row.original.team?.name || 'Selecao',
+      header: 'Seleção',
+      cell: ({ row }) => row.original.team?.display_name || row.original.team?.name || 'Seleção',
       meta: { align: 'team' },
     },
     {
@@ -436,7 +436,7 @@ export function WorldCupStatsPanel({ groups = [], bracketStages = [] }) {
   const [rankTab, setRankTab] = useState('scorers');
 
   if (!stats.finishedCount) {
-    return <section className="empty-state compact">Estatisticas serao exibidas apos os primeiros jogos.</section>;
+    return <section className="empty-state compact">Estatísticas serão exibidas após os primeiros jogos.</section>;
   }
 
   const rankData = rankTab === 'scorers' ? stats.topScorers
@@ -473,23 +473,23 @@ export function WorldCupStatsPanel({ groups = [], bracketStages = [] }) {
         <article className="copa-stat-card">
           <Zap size={22} />
           <AnimatedValue value={stats.totalGoals} />
-          <span>Total de Gols</span>
+          <span>Total de gols</span>
         </article>
         <article className="copa-stat-card">
           <TrendingUp size={22} />
           <AnimatedValue value={stats.avgGoals} decimals={1} />
-          <span>Media / Jogo</span>
+          <span>Média / jogo</span>
         </article>
         <article className="copa-stat-card">
           <CalendarCheck size={22} />
           <strong>{stats.finishedCount}<small> / {stats.totalCount}</small></strong>
-          <span>Jogos Disputados</span>
+          <span>Jogos disputados</span>
           <div className="stat-progress"><div className="stat-progress-fill" style={{ '--progress': `${Math.round((stats.finishedCount / Math.max(stats.totalCount, 1)) * 100)}%` }} /></div>
         </article>
         <article className="copa-stat-card accent">
           <Flame size={22} />
           <strong className="stat-matchup">{stats.biggestBlowout ? `${shortTeamCode(stats.biggestBlowout.home_team, teamLabel(stats.biggestBlowout.home_team, ''))} ${stats.biggestBlowout.home_score}x${stats.biggestBlowout.away_score} ${shortTeamCode(stats.biggestBlowout.away_team, teamLabel(stats.biggestBlowout.away_team, ''))}` : '-'}</strong>
-          <span>Maior Goleada</span>
+          <span>Maior goleada</span>
         </article>
         <article className="copa-stat-card">
           <Equal size={22} />
@@ -499,15 +499,15 @@ export function WorldCupStatsPanel({ groups = [], bracketStages = [] }) {
         <article className="copa-stat-card">
           <Target size={22} />
           <AnimatedValue value={stats.gamesWithGoalsPercent} suffix="%" />
-          <span>Jogos com Gols</span>
+          <span>Jogos com gols</span>
         </article>
       </div>
 
       <div className="copa-stats-rankings">
         <nav className="copa-stats-rank-tabs">
-          <button type="button" className={rankTab === 'scorers' ? 'active' : ''} onClick={() => setRankTab('scorers')}>Mais Gols</button>
-          <button type="button" className={rankTab === 'attack' ? 'active' : ''} onClick={() => setRankTab('attack')}>Melhor Ataque</button>
-          <button type="button" className={rankTab === 'defense' ? 'active' : ''} onClick={() => setRankTab('defense')}>Melhor Defesa</button>
+          <button type="button" className={rankTab === 'scorers' ? 'active' : ''} onClick={() => setRankTab('scorers')}>Mais gols</button>
+          <button type="button" className={rankTab === 'attack' ? 'active' : ''} onClick={() => setRankTab('attack')}>Melhor ataque</button>
+          <button type="button" className={rankTab === 'defense' ? 'active' : ''} onClick={() => setRankTab('defense')}>Melhor defesa</button>
         </nav>
         <div className="copa-stats-rank-list">
           {rankData.map((team, index) => (
@@ -519,23 +519,23 @@ export function WorldCupStatsPanel({ groups = [], bracketStages = [] }) {
               <strong>{rankValue(team)} <small>{rankUnit()}</small></strong>
             </article>
           ))}
-          {!rankData.length ? <span className="empty-state compact">Minimo de 2 jogos por selecao para exibir.</span> : null}
+          {!rankData.length ? <span className="empty-state compact">Mínimo de 2 jogos por seleção para exibir.</span> : null}
         </div>
       </div>
 
       <div className="copa-stats-insights">
         {stats.topPhase ? (
-          <article className="copa-insight-card gold" title="Fase com maior media de gols por jogo."><BarChart3 size={18} /><div><span>Fase mais goleadora</span><strong>{stats.topPhase.name} - {stats.topPhase.avg.toFixed(1)} gols/jogo</strong></div></article>
+          <article className="copa-insight-card gold" title="Fase com maior média de gols por jogo."><BarChart3 size={18} /><div><span>Fase mais goleadora</span><strong>{stats.topPhase.name} - {stats.topPhase.avg.toFixed(1)} gols/jogo</strong></div></article>
         ) : null}
         {stats.mostGoalsMatch ? (
           <article className="copa-insight-card green" title="Confronto com a maior soma de gols."><Award size={18} /><div><span>Jogo com mais gols</span><strong>{teamLabel(stats.mostGoalsMatch.home_team, '?')} {stats.mostGoalsMatch.home_score}x{stats.mostGoalsMatch.away_score} {teamLabel(stats.mostGoalsMatch.away_team, '?')} - {stats.mostGoals} gols</strong></div></article>
         ) : null}
-        <article className="copa-insight-card blue" title="Maior sequencia cronologica de jogos finalizados sem empate."><Shield size={18} /><div><span>Sequencia sem empates</span><strong>{stats.noDrawStreak} jogos</strong></div></article>
+        <article className="copa-insight-card blue" title="Maior sequência de jogos finalizados sem empate."><Shield size={18} /><div><span>Sequência sem empates</span><strong>{stats.noDrawStreak} jogos</strong></div></article>
         {stats.mostCommonScore ? (
           <article className="copa-insight-card gold" title="Placar final mais repetido entre os jogos finalizados."><Lightbulb size={18} /><div><span>Placar mais frequente</span><strong>{stats.mostCommonScore} - {stats.mostCommonCount} {stats.mostCommonCount === 1 ? 'vez' : 'vezes'}</strong></div></article>
         ) : null}
-        <article className="copa-insight-card green" title="Proxy de viradas quando nao ha dados de intervalo: vitorias do visitante."><ArrowRightLeft size={18} /><div><span>Viradas (proxy)</span><strong>{stats.awayWinsCount} jogos ({stats.finishedCount ? Math.round((stats.awayWinsCount / stats.finishedCount) * 100) : 0}%)</strong></div></article>
-        <article className="copa-insight-card blue" title="Selecoes ja preenchidas na primeira fase do mata-mata."><Trophy size={18} /><div><span>Classificados no mata-mata</span><strong>{stats.classifiedTeamsCount}<small> / {stats.classifiedTeamsTotal || 32}</small></strong></div></article>
+        <article className="copa-insight-card green" title="Vitórias de seleções visitantes em jogos finalizados."><ArrowRightLeft size={18} /><div><span>Vitórias do visitante</span><strong>{stats.awayWinsCount} jogos ({stats.finishedCount ? Math.round((stats.awayWinsCount / stats.finishedCount) * 100) : 0}%)</strong></div></article>
+        <article className="copa-insight-card blue" title="Seleções já preenchidas na primeira fase do mata-mata."><Trophy size={18} /><div><span>Classificados no mata-mata</span><strong>{stats.classifiedTeamsCount}<small> / {stats.classifiedTeamsTotal || 32}</small></strong></div></article>
       </div>
     </section>
   );

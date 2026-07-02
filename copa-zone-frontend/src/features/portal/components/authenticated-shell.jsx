@@ -3,11 +3,11 @@ import { CalendarDays, Globe2, Home, KeyRound, LockKeyhole, LogOut, Menu, Plus, 
 import { useState } from 'react';
 
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: Home },
+  { to: '/dashboard', label: 'Início', icon: Home },
   { to: '/ligas/minhas', label: 'Minhas ligas', icon: LockKeyhole },
-  { to: '/ligas/publicas', label: 'Ligas publicas', icon: Globe2 },
+  { to: '/ligas/publicas', label: 'Ligas públicas', icon: Globe2 },
   { to: '/copa/dados', label: 'Dados da Copa', icon: CalendarDays },
-  { to: '/ligas/entrar', label: 'Entrar por codigo', icon: KeyRound },
+  { to: '/ligas/entrar', label: 'Entrar por código', icon: KeyRound },
   { to: '/ligas/criar', label: 'Criar liga', icon: Plus },
 ];
 
@@ -67,7 +67,7 @@ export function AuthenticatedShell({ user, onLogout, isLoggingOut, title, subtit
             <Menu size={21} />
           </button>
           <div>
-            <p className="eyebrow">Area autenticada</p>
+            <p className="eyebrow">CopaZone</p>
             <h1>{title}</h1>
             <p>{subtitle}</p>
           </div>

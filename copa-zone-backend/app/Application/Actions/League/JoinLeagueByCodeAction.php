@@ -19,13 +19,13 @@ class JoinLeagueByCodeAction
 
             if (! $league) {
                 throw ValidationException::withMessages([
-                    'invite_code' => 'Codigo de convite invalido.',
+                    'invite_code' => 'Código de convite inválido.',
                 ]);
             }
 
             if ($league->visibility !== 'private' || $league->join_policy !== 'invite_code') {
                 throw ValidationException::withMessages([
-                    'invite_code' => 'Este codigo nao pertence a uma liga privada.',
+                    'invite_code' => 'Este código não pertence a uma liga privada.',
                 ]);
             }
 
@@ -39,19 +39,19 @@ class JoinLeagueByCodeAction
     {
         if ($league->status !== 'open') {
             throw ValidationException::withMessages([
-                'invite_code' => 'Esta liga nao esta aberta para novos participantes.',
+                'invite_code' => 'Esta liga não está aberta para novos participantes.',
             ]);
         }
 
         if ($league->members()->where('user_id', $user->id)->exists()) {
             throw ValidationException::withMessages([
-                'invite_code' => 'Voce ja participa desta liga.',
+                'invite_code' => 'Você já participa desta liga.',
             ]);
         }
 
         if ($league->activeMembers()->count() >= $league->max_members) {
             throw ValidationException::withMessages([
-                'invite_code' => 'Esta liga ja esta cheia.',
+                'invite_code' => 'Esta liga já está cheia.',
             ]);
         }
 

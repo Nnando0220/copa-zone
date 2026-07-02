@@ -66,7 +66,7 @@ class LeagueController extends Controller
             return response()->json([
                 'data' => ['league' => new LeagueResource($this->leagueForResource($league->id))],
                 'meta' => [],
-                'message' => 'O dono da liga nao pode sair da propria liga.',
+                'message' => 'O dono da liga não pode sair da própria liga.',
             ], 422);
         }
 
@@ -75,7 +75,7 @@ class LeagueController extends Controller
         return response()->json([
             'data' => ['league' => new LeagueResource($this->leagueForResource($league->id))],
             'meta' => [],
-            'message' => 'Voce saiu da liga com sucesso.',
+            'message' => 'Você saiu da liga com sucesso.',
         ]);
     }
 
@@ -86,7 +86,7 @@ class LeagueController extends Controller
         return response()->json([
             'data' => ['league' => new LeagueResource($this->leagueForResource($league->id))],
             'meta' => [],
-            'message' => 'Entrada por codigo realizada com sucesso.',
+            'message' => 'Entrada por código realizada com sucesso.',
         ]);
     }
 
@@ -101,7 +101,7 @@ class LeagueController extends Controller
                 'already_member' => $preview['already_member'],
             ],
             'message' => $preview['already_member']
-                ? 'Voce ja faz parte dessa liga.'
+                ? 'Você já faz parte dessa liga.'
                 : 'Liga encontrada com sucesso.',
         ]);
     }
@@ -135,8 +135,8 @@ class LeagueController extends Controller
                     'private_leagues_count' => $privateCount,
                     'public_leagues_available_count' => $publicLeagues->count(),
                     'activity_label' => $myLeagues->isEmpty()
-                        ? 'Voce ainda nao participa de nenhuma liga.'
-                        : 'Suas ligas estao prontas para acompanhar a Copa.',
+                        ? 'Você ainda não participa de nenhuma liga.'
+                        : 'Suas ligas estão prontas para acompanhar a Copa.',
                 ],
                 'my_leagues' => LeagueResource::collection($myLeagues),
                 'public_leagues' => LeagueResource::collection($publicLeagues),
@@ -182,7 +182,7 @@ class LeagueController extends Controller
                 'last_page' => $leagues->lastPage(),
                 'total' => $leagues->total(),
             ],
-            'message' => 'Ligas publicas carregadas com sucesso.',
+            'message' => 'Ligas públicas carregadas com sucesso.',
         ]);
     }
 
@@ -221,7 +221,7 @@ class LeagueController extends Controller
             return [[
                 'type' => 'empty',
                 'title' => 'Entre ou crie uma liga',
-                'description' => 'Ligas publicas ficam abertas para descoberta. Ligas privadas aparecem aqui somente quando voce participa.',
+                'description' => 'Ligas públicas ficam abertas para descoberta. Ligas privadas aparecem aqui somente quando você participa.',
             ]];
         }
 
@@ -229,7 +229,7 @@ class LeagueController extends Controller
             'type' => 'league_status',
             'title' => $league->name,
             'description' => $league->status === 'open'
-                ? 'Liga aberta para participantes e preparacao dos palpites.'
+                ? 'Liga aberta para participantes e preparação dos palpites.'
                 : 'Liga em acompanhamento.',
         ])->values()->all();
     }

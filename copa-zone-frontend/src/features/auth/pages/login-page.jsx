@@ -54,8 +54,8 @@ function TicketSubmitButton({ isLoading }) {
 
       <span className="ticket-submit-grid">
         <span>
-          <span className="ticket-kicker">Canhoto destacavel</span>
-          <span className="ticket-title">{isLoading ? 'Validando acesso' : 'Entrar no estadio'}</span>
+          <span className="ticket-kicker">Canhoto destacável</span>
+          <span className="ticket-title">{isLoading ? 'Validando acesso' : 'Entrar no estádio'}</span>
           <span className="ticket-copy">{isLoading ? 'Conferindo ingresso...' : 'Passe o mouse para validar'}</span>
         </span>
 
@@ -112,7 +112,7 @@ export function LoginPage({ onAuthenticated }) {
         }
       });
 
-      setErrorMsg(error.message || 'Nao foi possivel entrar com os dados informados.');
+      setErrorMsg(error.message || 'Não foi possível entrar com os dados informados.');
     } finally {
       setIsLoading(false);
     }
@@ -124,7 +124,7 @@ export function LoginPage({ onAuthenticated }) {
         <div className="login-hero-content">
           <Link to="/" className="auth-back-link">
             <ArrowLeft size={16} />
-            Voltar ao inicio
+            Voltar ao início
           </Link>
 
           <div className="hero-border-block">
@@ -133,13 +133,13 @@ export function LoginPage({ onAuthenticated }) {
               Entrada CopaZone
             </span>
             <h2>Apresente seu ingresso na catraca.</h2>
-            <p>Suas ligas, palpites da Copa e ranking ficam logo depois do portao.</p>
+            <p>Suas ligas, palpites da Copa e ranking ficam logo depois do portão.</p>
           </div>
 
           <div className="auth-step-list">
             {[
               { icon: Ticket, title: '1. Informe seu ingresso', desc: 'Use o e-mail cadastrado como titular da entrada.' },
-              { icon: ShieldCheck, title: '2. Valide o codigo', desc: 'Digite sua senha para confirmar o acesso.' },
+              { icon: ShieldCheck, title: '2. Valide o código', desc: 'Digite sua senha para confirmar o acesso.' },
               { icon: CheckCircle2, title: '3. Entre na Copa', desc: 'A catraca libera seu painel de ligas e palpites.' },
             ].map((step) => {
               const StepIcon = step.icon;
@@ -199,7 +199,7 @@ export function LoginPage({ onAuthenticated }) {
                       required: 'Informe seu e-mail para entrar.',
                       pattern: {
                         value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                        message: 'Informe um e-mail valido.',
+                        message: 'Informe um e-mail válido.',
                       },
                     })}
                     aria-invalid={!!errors.email}
@@ -209,7 +209,7 @@ export function LoginPage({ onAuthenticated }) {
                 </div>
 
                 <div className="field-stack">
-                  <label>Codigo de acesso</label>
+                  <label>Código de acesso</label>
                   <div className="password-field">
                     <input
                       type={showPassword ? 'text' : 'password'}
@@ -232,7 +232,7 @@ export function LoginPage({ onAuthenticated }) {
 
                 <div className="ticket-meta-grid">
                   <div>
-                    <span>Portao</span>
+                    <span>Portão</span>
                     <strong>07</strong>
                   </div>
                   <div>
@@ -246,7 +246,7 @@ export function LoginPage({ onAuthenticated }) {
                 </div>
 
                 <p className="auth-switch">
-                  Ainda nao tem ingresso? <Link to="/cadastro">Criar conta gratis</Link>
+                  Ainda não tem ingresso? <Link to="/cadastro">Criar conta grátis</Link>
                 </p>
               </div>
             </div>

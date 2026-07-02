@@ -66,7 +66,7 @@ class OpenLigaDbTranslationService
 
     public function stageLabel(string $code): string
     {
-        return config("openligadb_translations.stage_labels.{$code}", 'Fase nao identificada');
+        return config("openligadb_translations.stage_labels.{$code}", 'Fase não identificada');
     }
 
     public function translateStatus(string $status): string

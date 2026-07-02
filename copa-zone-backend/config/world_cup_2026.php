@@ -2,7 +2,7 @@
 
 return [
     'groups' => [
-        'A' => ['Mexico', 'Africa do Sul', 'Coreia do Sul', 'Republica Tcheca'],
+        'A' => ['México', 'África do Sul', 'Coreia do Sul', 'República Tcheca'],
         'B' => ['Canada', 'Bosnia e Herzegovina', 'Catar', 'Suica'],
         'C' => ['Brasil', 'Marrocos', 'Haiti', 'Escocia'],
         'D' => ['Estados Unidos', 'Paraguai', 'Australia', 'Turquia'],

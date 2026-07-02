@@ -19,13 +19,13 @@ class PreviewLeagueByCodeAction
 
         if (! $league || $league->visibility !== 'private' || $league->join_policy !== 'invite_code') {
             throw ValidationException::withMessages([
-                'invite_code' => 'Nao encontramos uma liga disponivel com esse codigo. Confira os caracteres e tente novamente.',
+                'invite_code' => 'Não encontramos uma liga disponível com esse código. Confira os caracteres e tente novamente.',
             ]);
         }
 
         if ($league->status !== 'open') {
             throw ValidationException::withMessages([
-                'invite_code' => 'Este convite nao esta mais disponivel. Solicite um novo codigo ao gestor.',
+                'invite_code' => 'Este convite não está mais disponível. Solicite um novo código ao gestor.',
             ]);
         }
 
@@ -36,7 +36,7 @@ class PreviewLeagueByCodeAction
 
         if (! $alreadyMember && $league->activeMembers()->count() >= $league->max_members) {
             throw ValidationException::withMessages([
-                'invite_code' => 'Essa liga ja atingiu o limite de participantes.',
+                'invite_code' => 'Essa liga já atingiu o limite de participantes.',
             ]);
         }
 
