@@ -1,0 +1,27 @@
+{
+  "name": "copa-zone-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "check:world-cup-contracts": "node scripts/check-world-cup-contracts.mjs",
+    "preview": "vite preview --host 127.0.0.1 --port 4173"
+  },
+  "dependencies": {
+    "@tanstack/react-table": "^8.21.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "laravel-echo": "^2.3.7",
+    "lucide-react": "^1.22.0",
+    "motion": "^12.42.0",
+    "pusher-js": "^8.5.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-hook-form": "^7.80.0",
+    "react-router": "^8.0.1",
+    "sonner": "^2.0.7",
+    "typescript": "^5.9.3",
+    "vite": "^8.1.0"
+  }
+}
