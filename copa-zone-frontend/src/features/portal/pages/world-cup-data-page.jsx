@@ -8,7 +8,7 @@ import { WorldCupBracketView, WorldCupGroupPanel, WorldCupStatsPanel } from '../
 import { portalService } from '../services/portal-service';
 
 const tabs = [
-  { id: 'summary', label: 'Estatisticas' },
+  { id: 'summary', label: 'Estatísticas' },
   { id: 'groups', label: 'Fases' },
   { id: 'bracket', label: 'Chaveamento' },
   { id: 'matches', label: 'Partidas' },
@@ -16,10 +16,23 @@ const tabs = [
 
 function formatSyncedAt(value) {
   if (!value) {
-    return 'Ainda nao sincronizado';
+    return 'Ainda não atualizado';
   }
 
   return formatBrazilDateTime(value);
+}
+
+function getSyncStatusLabel(status) {
+  const labels = {
+    failed: 'Atenção necessária',
+    idle: 'Aguardando atualização',
+    running: 'Atualizando',
+    skipped: 'Sem nova atualização',
+    synced: 'Em dia',
+    syncing: 'Atualizando',
+  };
+
+  return labels[status] ?? 'Status indisponível';
 }
 
 export function WorldCupDataPage() {
@@ -70,7 +83,7 @@ export function WorldCupDataPage() {
         })
         .catch((requestError) => {
           if (isMounted) {
-            setError(requestError.message || 'Nao foi possivel carregar os dados da Copa.');
+            setError(requestError.message || 'Não foi possível carregar os dados da Copa.');
           }
         })
         .finally(() => {
@@ -116,7 +129,7 @@ export function WorldCupDataPage() {
         })
         .catch((requestError) => {
           if (isMounted) {
-            setError(requestError.message || 'Nao foi possivel carregar as partidas da Copa.');
+            setError(requestError.message || 'Não foi possível carregar as partidas da Copa.');
           }
         })
         .finally(() => {
@@ -166,8 +179,8 @@ export function WorldCupDataPage() {
       <div className="content-section world-cup-overview">
         <div className="section-header">
           <div>
-            <p className="eyebrow">OpenLigaDB</p>
-            <h2>{edition ? `${edition.name} ${edition.season}` : 'Dados ainda nao sincronizados'}</h2>
+            <p className="eyebrow">Copa do Mundo 2026</p>
+            <h2>{edition ? `${edition.name} ${edition.season}` : 'Dados ainda não atualizados'}</h2>
           </div>
           <span className="diagnostic-pill">{meta.groups_count ?? 0} grupos/fases</span>
         </div>
@@ -180,9 +193,8 @@ export function WorldCupDataPage() {
         </nav>
         {syncStatus?.sync && (
           <div className="sync-status-strip">
-            <span>Status: <strong>{syncStatus.sync.status}</strong></span>
-            <span>Proxima tentativa: <strong>{formatSyncedAt(syncStatus.sync.next_attempt_at)}</strong></span>
-            {syncStatus.sync.last_error && <span>Ultimo erro: <strong>{syncStatus.sync.last_error}</strong></span>}
+            <span>Atualização: <strong>{getSyncStatusLabel(syncStatus.sync.status)}</strong></span>
+            {syncStatus.sync.last_error && <span>Última mensagem: <strong>{syncStatus.sync.last_error}</strong></span>}
           </div>
         )}
 
@@ -190,8 +202,8 @@ export function WorldCupDataPage() {
           <>
             <WorldCupStatsPanel groups={groups} bracketStages={bracketStages} />
             <div className="diagnostic-grid" style={{ marginTop: 18 }}>
-              <article><Activity size={22} /><span>Status da edicao</span><strong>{edition?.status ?? 'sem dados'}</strong></article>
-              <article><RefreshCcw size={22} /><span>Ultima sync</span><strong>{formatSyncedAt(meta.last_synced_at)}</strong></article>
+              <article><Activity size={22} /><span>Status da edição</span><strong>{edition?.status === 'synced' ? 'Em dia' : edition?.status ?? 'sem dados'}</strong></article>
+              <article><RefreshCcw size={22} /><span>Última atualização</span><strong>{formatSyncedAt(meta.last_synced_at)}</strong></article>
               <article><Activity size={22} /><span>Chamadas hoje</span><strong>{syncStatus?.budget ? `${syncStatus.budget.calls_used_today}/${syncStatus.budget.daily_limit}` : '0/1000'}</strong></article>
             </div>
           </>
@@ -210,7 +222,7 @@ export function WorldCupDataPage() {
                 </button>
               ))}
             </div>
-            {selectedGroup ? <WorldCupGroupPanel group={selectedGroup} /> : <section className="empty-state">Nenhum grupo disponivel ainda.</section>}
+            {selectedGroup ? <WorldCupGroupPanel group={selectedGroup} /> : <section className="empty-state">Nenhum grupo disponível ainda.</section>}
           </div>
         )}
 

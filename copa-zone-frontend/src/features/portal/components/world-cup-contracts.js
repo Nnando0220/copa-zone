@@ -6,7 +6,7 @@ export const ROUND_LABELS = {
   semifinal: 'Semifinal',
   third_place: 'Disputa de terceiro lugar',
   final: 'Final',
-  unknown_stage: 'Fase nao identificada',
+  unknown_stage: 'Fase não identificada',
 };
 
 export const ROUND_ALIASES = {
@@ -47,7 +47,7 @@ export const ROUND_ALIASES = {
 };
 
 export const MATCH_STATE_LABELS = {
-  awaiting_teams: 'Aguardando selecoes',
+  awaiting_teams: 'Aguardando seleções',
   scheduled: 'Agendada',
   open_for_prediction: 'Palpite aberto',
   prediction_saved: 'Palpite salvo',
@@ -187,6 +187,35 @@ const TEAM_CODES = {
   uzbequistao: 'UZB',
 };
 
+const TEAM_NAME_OVERRIDES = {
+  africa_do_sul: 'África do Sul',
+  argelia: 'Argélia',
+  arabia_saudita: 'Arábia Saudita',
+  australia: 'Austrália',
+  austria: 'Áustria',
+  belgica: 'Bélgica',
+  bosnia_e_herzegovina: 'Bósnia e Herzegovina',
+  canada: 'Canadá',
+  colombia: 'Colômbia',
+  croacia: 'Croácia',
+  curacao: 'Curaçao',
+  escocia: 'Escócia',
+  franca: 'França',
+  ira: 'Irã',
+  japao: 'Japão',
+  jordania: 'Jordânia',
+  mexico: 'México',
+  nova_zelandia: 'Nova Zelândia',
+  paises_baixos: 'Países Baixos',
+  panama: 'Panamá',
+  pais_de_gales: 'País de Gales',
+  republica_tcheca: 'República Tcheca',
+  suecia: 'Suécia',
+  suica: 'Suíça',
+  tunisia: 'Tunísia',
+  uzbequistao: 'Uzbequistão',
+};
+
 const PROVIDER_NAME_ALIASES = {
   algeria: 'argelia',
   algerien: 'argelia',
@@ -268,7 +297,7 @@ export function localizedTeamName(value) {
   const key = normalizeContractKey(value);
   const canonicalKey = PROVIDER_NAME_ALIASES[key] ?? key;
 
-  return TEAM_NAMES[canonicalKey] ?? value;
+  return TEAM_NAME_OVERRIDES[canonicalKey] ?? TEAM_NAMES[canonicalKey] ?? value;
 }
 
 export function teamCodeFor(team, label) {

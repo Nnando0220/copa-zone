@@ -48,8 +48,8 @@ export function MatchList({ matches }) {
   if (!matches.length) {
     return (
       <div className="empty-state compact">
-        <h2>Nenhuma partida sincronizada</h2>
-        <p>Rode o comando de sincronizacao da Copa para popular esta lista.</p>
+        <h2>Nenhuma partida disponível ainda</h2>
+        <p>Assim que os jogos forem atualizados, eles aparecerão aqui.</p>
       </div>
     );
   }
