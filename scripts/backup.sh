@@ -13,10 +13,10 @@ fi
 mkdir -p "${BACKUP_DIR}"
 
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
-BACKUP_FILE="${BACKUP_DIR}/copazone-${TIMESTAMP}.sql.gz"
+BACKUP_FILE="${BACKUP_DIR}/copazone-${TIMESTAMP}.dump"
 
-${COMPOSE} exec -T postgres sh -c 'pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB"' | gzip > "${BACKUP_FILE}"
+${COMPOSE} exec -T postgres sh -c 'pg_dump --format=custom --no-owner --no-acl -U "$POSTGRES_USER" "$POSTGRES_DB"' > "${BACKUP_FILE}"
 
-find "${BACKUP_DIR}" -name 'copazone-*.sql.gz' -type f -mtime +14 -delete
+find "${BACKUP_DIR}" -name 'copazone-*.dump' -type f -mtime +14 -delete
 
 echo "Backup written to ${BACKUP_FILE}."

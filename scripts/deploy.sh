@@ -13,12 +13,13 @@ ${COMPOSE} build
 ${COMPOSE} up -d postgres
 
 echo "Waiting for PostgreSQL healthcheck..."
-until [ "$(${COMPOSE} ps --status running --format '{{.Service}}' | grep -c '^postgres$')" -gt 0 ]; do
+POSTGRES_CONTAINER="$(${COMPOSE} ps -q postgres)"
+until [ "$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "${POSTGRES_CONTAINER}")" = "healthy" ]; do
     sleep 2
 done
 
 ${COMPOSE} run --rm backend php artisan migrate --force --ansi
-${COMPOSE} run --rm backend php artisan storage:link --force --ansi || true
+${COMPOSE} run --rm backend php artisan storage:link --force --ansi
 ${COMPOSE} run --rm backend php artisan optimize --ansi
 ${COMPOSE} up -d
 ${COMPOSE} exec backend php artisan queue:restart --ansi || true
