@@ -28,6 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 | Request::HEADER_X_FORWARDED_PROTO
                 | Request::HEADER_X_FORWARDED_PREFIX,
         );
+        $middleware->redirectGuestsTo(
+            fn (Request $request) => $request->is('api/*') ? null : '/login',
+        );
         $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
