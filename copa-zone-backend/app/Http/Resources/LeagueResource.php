@@ -48,7 +48,6 @@ class LeagueResource extends JsonResource
                 'late_join_enabled' => $this->settings?->late_join_enabled,
                 'ranking_visibility' => $this->settings?->ranking_visibility,
             ]),
-            'summary' => $this->summary,
             'created_at' => $this->created_at,
         ];
     }

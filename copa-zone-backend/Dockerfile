@@ -3,21 +3,20 @@ FROM php:8.4-cli
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         git \
+        libsqlite3-dev \
         libpq-dev \
         libzip-dev \
         unzip \
         zip \
-    && docker-php-ext-install pcntl pdo_mysql pdo_pgsql zip \
+    && docker-php-ext-install pcntl pdo_mysql pdo_pgsql pdo_sqlite zip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY composer.json composer.lock ./
-RUN composer install --no-interaction --optimize-autoloader --no-scripts
-
 COPY . .
+RUN composer install --no-interaction --optimize-autoloader
 COPY docker/entrypoint.sh /usr/local/bin/copazone-backend-entrypoint
 
 RUN chmod +x /usr/local/bin/copazone-backend-entrypoint \

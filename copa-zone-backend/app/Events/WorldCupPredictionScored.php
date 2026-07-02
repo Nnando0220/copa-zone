@@ -4,7 +4,7 @@ namespace App\Events;
 
 use App\Http\Resources\PredictionResource;
 use App\Models\Prediction;
-use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -25,10 +25,7 @@ class WorldCupPredictionScored implements ShouldBroadcastNow
 
     public function broadcastOn(): array
     {
-        return [
-            new Channel('world-cup'),
-            new Channel("league.{$this->prediction->league_id}"),
-        ];
+        return [new PrivateChannel("league.{$this->prediction->league_id}")];
     }
 
     /**

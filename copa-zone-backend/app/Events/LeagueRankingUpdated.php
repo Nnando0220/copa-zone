@@ -4,7 +4,7 @@ namespace App\Events;
 
 use App\Http\Resources\LeagueRankingResource;
 use App\Models\League;
-use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -25,10 +25,7 @@ class LeagueRankingUpdated implements ShouldBroadcastNow
 
     public function broadcastOn(): array
     {
-        return [
-            new Channel('world-cup'),
-            new Channel("league.{$this->league->id}"),
-        ];
+        return [new PrivateChannel("league.{$this->league->id}")];
     }
 
     /**

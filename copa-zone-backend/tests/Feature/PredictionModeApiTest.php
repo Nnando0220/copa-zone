@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Events\LeagueRankingUpdated;
 use App\Events\WorldCupPredictionLockReached;
+use App\Events\WorldCupPredictionScored;
 use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\Prediction;
@@ -13,6 +14,7 @@ use App\Models\TournamentGroup;
 use App\Models\User;
 use App\Models\WorldCupMatch;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
@@ -348,9 +350,41 @@ class PredictionModeApiTest extends TestCase
             ->assertJsonPath('data.rankings.0.exact_scores', 1);
 
         $payload = (new LeagueRankingUpdated($league->refresh()))->broadcastWith();
+        $channels = (new LeagueRankingUpdated($league->refresh()))->broadcastOn();
 
         $this->assertSame($league->id, $payload['league_id']);
         $this->assertSame($user->id, $payload['rankings'][0]['member']['user']['id']);
+        $this->assertCount(1, $channels);
+        $this->assertInstanceOf(PrivateChannel::class, $channels[0]);
+        $this->assertSame("private-league.{$league->id}", $channels[0]->name);
+    }
+
+    public function test_prediction_scored_event_is_only_sent_to_private_league_channel(): void
+    {
+        $user = User::factory()->create();
+        $league = $this->createLeagueFor($user);
+        $match = $this->createMatch(now()->subDay(), 'finished');
+        $member = $league->members()->where('user_id', $user->id)->firstOrFail();
+        $prediction = Prediction::create([
+            'league_id' => $league->id,
+            'league_member_id' => $member->id,
+            'match_id' => $match->id,
+            'predicted_home_score' => 1,
+            'predicted_away_score' => 0,
+            'status' => 'settled',
+            'submitted_at' => now()->subDays(2),
+            'locked_at' => now()->subDay(),
+            'scored_at' => now(),
+            'points_awarded' => 5,
+            'score_reason' => 'exact_score',
+            'prediction_version' => 1,
+        ]);
+
+        $channels = (new WorldCupPredictionScored($prediction))->broadcastOn();
+
+        $this->assertCount(1, $channels);
+        $this->assertInstanceOf(PrivateChannel::class, $channels[0]);
+        $this->assertSame("private-league.{$league->id}", $channels[0]->name);
     }
 
     public function test_prediction_lock_reached_event_is_broadcast_once(): void

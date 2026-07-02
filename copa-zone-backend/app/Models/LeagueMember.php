@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class LeagueMember extends Model
 {
@@ -35,12 +37,12 @@ class LeagueMember extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function predictions()
+    public function predictions(): HasMany
     {
         return $this->hasMany(Prediction::class);
     }
 
-    public function ranking()
+    public function ranking(): HasOne
     {
         return $this->hasOne(LeagueRanking::class);
     }
