@@ -46,6 +46,8 @@ export function WorldCupDataPage() {
     let isMounted = true;
 
     function loadDiagnostic() {
+      setError('');
+
       Promise.all([
         portalService.worldCup(),
         portalService.worldCupSyncStatus(),
@@ -64,6 +66,7 @@ export function WorldCupDataPage() {
           setSyncStatus(syncPayload.data);
           setGroups(groupsPayload.data.groups ?? []);
           setBracketStages(bracketPayload.data.bracket?.stages ?? []);
+          setError('');
         })
         .catch((requestError) => {
           if (isMounted) {
@@ -99,6 +102,8 @@ export function WorldCupDataPage() {
 
     function loadMatches() {
       setIsLoadingMatches(true);
+      setError('');
+
       portalService.worldCupMatches({ period })
         .then((matchesPayload) => {
           if (!isMounted) {
@@ -107,6 +112,7 @@ export function WorldCupDataPage() {
 
           setMatches(matchesPayload.data.matches ?? []);
           setMatchesTotal(matchesPayload.meta?.total ?? 0);
+          setError('');
         })
         .catch((requestError) => {
           if (isMounted) {

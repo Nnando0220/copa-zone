@@ -11,18 +11,22 @@ function normalizeLocalApiBaseUrl(url) {
     return url;
   }
 
-  const parsedUrl = new URL(url);
-  const frontendHost = window.location.hostname;
-  const localHosts = ['127.0.0.1', 'localhost'];
+  try {
+    const parsedUrl = new URL(url);
+    const frontendHost = window.location.hostname;
+    const localHosts = ['127.0.0.1', 'localhost'];
 
-  if (localHosts.includes(frontendHost) && localHosts.includes(parsedUrl.hostname)) {
-    parsedUrl.hostname = frontendHost;
+    if (localHosts.includes(frontendHost) && localHosts.includes(parsedUrl.hostname)) {
+      parsedUrl.hostname = frontendHost;
+    }
+
+    return parsedUrl.toString().replace(/\/$/, '');
+  } catch {
+    return getDefaultApiBaseUrl();
   }
-
-  return parsedUrl.toString().replace(/\/$/, '');
 }
 
-const API_BASE_URL = normalizeLocalApiBaseUrl(
+export const API_BASE_URL = normalizeLocalApiBaseUrl(
   import.meta.env.VITE_API_BASE_URL || getDefaultApiBaseUrl()
 );
 const SANCTUM_CSRF_URL = new URL('/sanctum/csrf-cookie', API_BASE_URL).toString();
@@ -41,6 +45,10 @@ function getCookie(name) {
   }
 
   return decodeURIComponent(cookie.slice(name.length + 1));
+}
+
+export function getXsrfToken() {
+  return getCookie('XSRF-TOKEN');
 }
 
 function csrfHeader(options) {

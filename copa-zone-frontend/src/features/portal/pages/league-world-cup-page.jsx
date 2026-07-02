@@ -140,11 +140,9 @@ export function LeagueWorldCupPage() {
     echo.channel('world-cup')
       .listen('.world_cup.match.updated', reloadStructure)
       .listen('.world_cup.match.finished', reloadStructure)
-      .listen('.world_cup.stage.updated', reloadStructure)
-      .listen('.world_cup.prediction.scored', reloadScoring)
-      .listen('.world_cup.ranking.updated', reloadRanking);
+      .listen('.world_cup.stage.updated', reloadStructure);
 
-    echo.channel(`league.${leagueId}`)
+    echo.private(`league.${leagueId}`)
       .listen('.world_cup.predictions.locked', reloadStructure)
       .listen('.world_cup.prediction.scored', reloadScoring)
       .listen('.world_cup.ranking.updated', reloadRanking);
@@ -182,7 +180,11 @@ export function LeagueWorldCupPage() {
     setDrafts((current) => ({
       ...current,
       [matchId]: {
-        ...(current[matchId] ?? draftFor({ id: matchId })),
+        ...(current[matchId] ?? {
+          predicted_home_score: predictionsByMatch[matchId]?.predicted_home_score ?? 0,
+          predicted_away_score: predictionsByMatch[matchId]?.predicted_away_score ?? 0,
+          predicted_winner_side: predictionsByMatch[matchId]?.predicted_winner_side ?? null,
+        }),
         [field]: field === 'predicted_winner_side'
           ? value
           : Math.max(0, Number.parseInt(value, 10) || 0),
