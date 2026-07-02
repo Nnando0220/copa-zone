@@ -1,4 +1,7 @@
 .env
+.env.*
+!.env.example
+!.env.docker.example
 .phpunit.result.cache
 node_modules
 public/build
