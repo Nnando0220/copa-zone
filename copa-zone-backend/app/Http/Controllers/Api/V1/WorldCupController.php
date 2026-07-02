@@ -35,7 +35,7 @@ class WorldCupController extends Controller
             'meta' => $this->diagnosticMeta(),
             'message' => $edition
                 ? 'Dados da Copa carregados com sucesso.'
-                : 'Dados da Copa ainda não foram atualizados.',
+                : 'Dados da Copa ainda não foram sincronizados.',
         ]);
     }
 
