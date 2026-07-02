@@ -2,9 +2,9 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: copazone
-      POSTGRES_USER: copazone
-      POSTGRES_PASSWORD: copazone_secret
+      POSTGRES_DB: ${POSTGRES_DB:-copazone}
+      POSTGRES_USER: ${POSTGRES_USER:-copazone}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-copazone_secret}
     ports:
       - "5432:5432"
     volumes:
@@ -19,7 +19,7 @@ services:
     build:
       context: ./copa-zone-backend
     env_file:
-      - ./copa-zone-backend/.env.docker
+      - ./copa-zone-backend/.env.docker.example
     environment:
       APP_NAME: CopaZone
       APP_ENV: local
@@ -44,7 +44,7 @@ services:
       - "8000:8000"
     volumes:
       - ./copa-zone-backend:/var/www/html
-      - ./copa-zone-backend/.env.docker:/var/www/html/.env:ro
+      - ./copa-zone-backend/.env.docker.example:/var/www/html/.env:ro
       - backend_vendor:/var/www/html/vendor
     depends_on:
       postgres:
@@ -54,7 +54,7 @@ services:
     build:
       context: ./copa-zone-backend
     env_file:
-      - ./copa-zone-backend/.env.docker
+      - ./copa-zone-backend/.env.docker.example
     environment:
       APP_NAME: CopaZone
       APP_ENV: local
@@ -77,7 +77,7 @@ services:
       REVERB_SCHEME: http
     volumes:
       - ./copa-zone-backend:/var/www/html
-      - ./copa-zone-backend/.env.docker:/var/www/html/.env:ro
+      - ./copa-zone-backend/.env.docker.example:/var/www/html/.env:ro
       - backend_vendor:/var/www/html/vendor
     depends_on:
       postgres:
@@ -90,7 +90,7 @@ services:
     build:
       context: ./copa-zone-backend
     env_file:
-      - ./copa-zone-backend/.env.docker
+      - ./copa-zone-backend/.env.docker.example
     environment:
       APP_NAME: CopaZone
       APP_ENV: local
@@ -114,7 +114,7 @@ services:
       - "8080:8080"
     volumes:
       - ./copa-zone-backend:/var/www/html
-      - ./copa-zone-backend/.env.docker:/var/www/html/.env:ro
+      - ./copa-zone-backend/.env.docker.example:/var/www/html/.env:ro
       - backend_vendor:/var/www/html/vendor
     depends_on:
       postgres:
