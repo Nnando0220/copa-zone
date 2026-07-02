@@ -14,12 +14,12 @@ export function PublicLeaguesPage() {
     portalService
       .publicLeagues()
       .then((payload) => setLeagues(payload.data ?? []))
-      .catch((requestError) => setError(requestError.message || 'Nao foi possivel carregar ligas publicas.'))
+      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar ligas públicas.'))
       .finally(() => setIsLoading(false));
   }, []);
 
   if (isLoading) {
-    return <section className="content-loading">Carregando ligas publicas...</section>;
+    return <section className="content-loading">Carregando ligas públicas...</section>;
   }
 
   if (error) {
@@ -30,8 +30,8 @@ export function PublicLeaguesPage() {
     <section className="content-section">
       {leagues.length === 0 ? (
         <EmptyState
-          title="Nenhuma liga publica aberta"
-          description="Quando gestores abrirem ligas publicas, elas aparecerao aqui para todos os usuarios autenticados."
+          title="Nenhuma liga pública aberta"
+          description="Quando novas ligas públicas estiverem disponíveis, elas aparecerão aqui para você explorar."
         />
       ) : (
         <div className="league-grid">

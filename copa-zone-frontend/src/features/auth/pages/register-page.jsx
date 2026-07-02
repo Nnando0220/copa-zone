@@ -82,24 +82,24 @@ export function RegisterPage({ onAuthenticated }) {
         }
       });
 
-      setFormError(error.message || 'Revise os campos destacados para concluir sua inscricao.');
-      toast.error('Revise os dados da inscricao.');
+      setFormError(error.message || 'Revise os campos destacados para concluir sua inscrição.');
+      toast.error('Revise os dados da inscrição.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const steps = [
-    { icon: UserPlus, title: '1. Crie sua conta', desc: 'Assine a sumula oficial da CopaZone.', active: true },
+    { icon: UserPlus, title: '1. Crie sua conta', desc: 'Crie sua conta gratuitamente na CopaZone.', active: true },
     { icon: Users, title: '2. Entre em uma liga', desc: 'Junte-se aos seus amigos ou jogue globalmente.', active: false },
-    { icon: Trophy, title: '3. Faca seus palpites', desc: 'Mostre que voce entende da Copa do Mundo.', active: false },
+    { icon: Trophy, title: '3. Faça seus palpites', desc: 'Mostre que você entende da Copa do Mundo.', active: false },
   ];
 
   return (
     <div className="register-page">
       <AuthStepsSidebar
         title="Comece em 3 passos"
-        subtitle="Voce esta assinando a sumula para entrar no bolao recreativo da Copa."
+        subtitle="Você está a três passos de entrar no bolão da Copa."
         steps={steps}
       />
 
@@ -116,13 +116,13 @@ export function RegisterPage({ onAuthenticated }) {
             <div className="registration-strip" />
             <div className="registration-header">
               <div>
-                <div className="document-kicker">Documento oficial</div>
-                <h1>Ficha de Inscricao</h1>
+                <div className="document-kicker">Cadastro</div>
+                <h1>Crie sua conta</h1>
               </div>
               <div className="free-stamp">
                 Conta
                 <br />
-                Gratis
+                Grátis
               </div>
             </div>
 
@@ -140,10 +140,10 @@ export function RegisterPage({ onAuthenticated }) {
                   <input
                     type="text"
                     {...register('name', {
-                      required: 'Informe seu nome completo para assinar a sumula.',
+                      required: 'Informe seu nome completo para criar a conta.',
                       maxLength: {
                         value: 120,
-                        message: 'O nome completo pode ter no maximo 120 caracteres.',
+                        message: 'O nome completo pode ter no máximo 120 caracteres.',
                       },
                     })}
                     aria-invalid={!!errors.name}
@@ -160,11 +160,11 @@ export function RegisterPage({ onAuthenticated }) {
                       required: 'Informe seu e-mail para criar a conta.',
                       pattern: {
                         value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                        message: 'Informe um e-mail valido.',
+                        message: 'Informe um e-mail válido.',
                       },
                       maxLength: {
                         value: 180,
-                        message: 'O e-mail pode ter no maximo 180 caracteres.',
+                        message: 'O e-mail pode ter no máximo 180 caracteres.',
                       },
                     })}
                     aria-invalid={!!errors.email}
@@ -188,7 +188,7 @@ export function RegisterPage({ onAuthenticated }) {
                         },
                         validate: {
                           hasLetter: (value) => /\p{L}/u.test(value) || 'A senha precisa ter pelo menos uma letra.',
-                          hasNumber: (value) => /\d/.test(value) || 'A senha precisa ter pelo menos um numero.',
+                          hasNumber: (value) => /\d/.test(value) || 'A senha precisa ter pelo menos um número.',
                         },
                       })}
                       aria-invalid={!!errors.password}
@@ -211,8 +211,8 @@ export function RegisterPage({ onAuthenticated }) {
                     <input
                       type={showPasswordConfirmation ? 'text' : 'password'}
                       {...register('password_confirmation', {
-                        required: 'Confirme a senha para evitar erro de digitacao.',
-                        validate: (value) => value === watchedPassword || 'A confirmacao precisa ser igual a senha.',
+                        required: 'Confirme a senha para evitar erro de digitação.',
+                        validate: (value) => value === watchedPassword || 'A confirmação precisa ser igual à senha.',
                       })}
                       aria-invalid={!!errors.password_confirmation}
                       placeholder="********"
@@ -220,7 +220,7 @@ export function RegisterPage({ onAuthenticated }) {
                     <button
                       type="button"
                       onClick={() => setShowPasswordConfirmation((value) => !value)}
-                      aria-label={showPasswordConfirmation ? 'Ocultar confirmacao de senha' : 'Mostrar confirmacao de senha'}
+                      aria-label={showPasswordConfirmation ? 'Ocultar confirmação de senha' : 'Mostrar confirmação de senha'}
                     >
                       {showPasswordConfirmation ? <EyeOff size={17} /> : <Eye size={17} />}
                     </button>
@@ -230,11 +230,11 @@ export function RegisterPage({ onAuthenticated }) {
               </div>
 
               <div className="password-note">
-                A senha deve ter pelo menos 8 caracteres, uma letra, um numero e a confirmacao precisa ser identica.
+                A senha deve ter pelo menos 8 caracteres, uma letra, um número e a confirmação precisa ser idêntica.
               </div>
 
               <button type="submit" disabled={isLoading} className="signature-button">
-                <span className="document-kicker">Contrato de inscricao CopaZone</span>
+                <span className="document-kicker">CopaZone</span>
                 <span className="signature-line">
                   <span className={isLoading ? 'signature-name visible' : 'signature-name'}>
                     {isLoading ? signatureDraft : signatureName}
@@ -250,7 +250,7 @@ export function RegisterPage({ onAuthenticated }) {
             </form>
 
             <p className="auth-switch">
-              Ja esta inscrito na CopaZone? <Link to="/login">Acessar minha conta</Link>
+              Já está inscrito na CopaZone? <Link to="/login">Acessar minha conta</Link>
             </p>
           </motion.div>
         </div>

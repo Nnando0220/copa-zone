@@ -80,7 +80,7 @@ async function sendRequest(path, options = {}) {
       payload?.message
         || payload?.error?.message
         || Object.values(payload?.errors || {})?.[0]?.[0]
-        || 'Nao foi possivel concluir a operacao.'
+        || 'Não foi possível concluir a operação.'
     );
 
     error.status = response.status;
@@ -119,6 +119,6 @@ export async function refreshCsrfToken() {
   });
 
   if (!response.ok) {
-    throw new Error('Nao foi possivel preparar a protecao CSRF.');
+    throw new Error('Não foi possível preparar a proteção de acesso.');
   }
 }

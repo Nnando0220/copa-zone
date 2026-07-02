@@ -34,9 +34,9 @@ function LandingPage({ user }) {
       <section className="landing-hero">
         <div>
           <p className="eyebrow">CopaZone</p>
-          <h1>Bolao recreativo da Copa do Mundo</h1>
+          <h1>Bolão recreativo da Copa do Mundo</h1>
           <p>
-            Entre, crie sua liga e acompanhe seus palpites com a API do backend como fonte oficial da verdade.
+            Entre, crie sua liga e acompanhe a Copa em tempo real com sua turma.
           </p>
           <div className="landing-actions">
             {user ? (
@@ -54,8 +54,8 @@ function LandingPage({ user }) {
 
         <div className="landing-summary">
           {[
-            { icon: ShieldCheck, title: 'Cookie HttpOnly', desc: 'Sessao segura controlada pelo backend.' },
-            { icon: Users, title: 'Ligas', desc: 'Proxima etapa do fluxo do MVP.' },
+            { icon: ShieldCheck, title: 'Sessão segura', desc: 'Seus dados protegidos a cada acesso.' },
+            { icon: Users, title: 'Ligas', desc: 'Crie ou entre em ligas com seus amigos.' },
             { icon: Trophy, title: 'Copa', desc: 'Escopo exclusivo da Copa do Mundo.' },
           ].map((item) => {
             const Icon = item.icon;
@@ -68,6 +68,89 @@ function LandingPage({ user }) {
               </article>
             );
           })}
+        </div>
+      </section>
+
+      <section className="landing-preview-section" aria-labelledby="landing-preview-title">
+        <div className="landing-preview-heading">
+          <p className="eyebrow">Por dentro da CopaZone</p>
+          <h2 id="landing-preview-title">Veja o que aparece depois do acesso</h2>
+          <p>Organize sua liga, acompanhe o chaveamento e compare os palpites da turma em uma experiência feita para a Copa.</p>
+        </div>
+
+        <div className="landing-preview-grid">
+          <article className="landing-preview-card dashboard-shot">
+            <div className="preview-window-bar">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="preview-shot-header">
+              <small>Início</small>
+              <strong>Suas ligas em destaque</strong>
+            </div>
+            <div className="preview-metrics">
+              <span><b>3</b>Ligas</span>
+              <span><b>24</b>Amigos</span>
+              <span><b>12</b>Grupos</span>
+            </div>
+            <div className="preview-league-row">
+              <span>Bolão da Firma</span>
+              <strong>Modo Copa</strong>
+            </div>
+            <div className="preview-league-row">
+              <span>Família 2026</span>
+              <strong>Convite</strong>
+            </div>
+          </article>
+
+          <article className="landing-preview-card bracket-shot">
+            <div className="preview-window-bar">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="preview-shot-header">
+              <small>Chaveamento</small>
+              <strong>Palpites por confronto</strong>
+            </div>
+            <div className="preview-bracket">
+              <div>
+                <span>BRA 2</span>
+                <span>JAP 1</span>
+              </div>
+              <div>
+                <span>FRA 1</span>
+                <span>ARG 1</span>
+              </div>
+              <div className="final">
+                <span>BRA</span>
+                <span>ARG</span>
+              </div>
+            </div>
+            <div className="preview-prediction">
+              <span>Seu palpite</span>
+              <strong>Brasil 2 x 1 Japão</strong>
+            </div>
+          </article>
+
+          <article className="landing-preview-card ranking-shot">
+            <div className="preview-window-bar">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="preview-shot-header">
+              <small>Ranking</small>
+              <strong>Disputa ponto a ponto</strong>
+            </div>
+            <ol className="preview-ranking">
+              <li><b>1</b><span>Fernando</span><strong>42 pts</strong></li>
+              <li><b>2</b><span>Ana</span><strong>39 pts</strong></li>
+              <li><b>3</b><span>Lucas</span><strong>34 pts</strong></li>
+            </ol>
+            <div className="preview-live-pill">Atualização ao vivo</div>
+          </article>
         </div>
       </section>
     </main>
@@ -132,10 +215,10 @@ function AppRoutes() {
     try {
       await authService.logout();
       setUser(null);
-      toast.success('Sessao encerrada com sucesso.');
+      toast.success('Sessão encerrada com sucesso.');
       navigate('/login', { replace: true });
     } catch (error) {
-      toast.error(error.message || 'Nao foi possivel sair agora.');
+      toast.error(error.message || 'Não foi possível sair agora.');
     } finally {
       setIsLoggingOut(false);
     }
@@ -173,8 +256,8 @@ function AppRoutes() {
               isBooting={isBooting}
               onLogout={logout}
               isLoggingOut={isLoggingOut}
-              title="Dashboard"
-              subtitle="Acompanhe suas ligas, atividades e oportunidades publicas da CopaZone."
+              title="Início"
+              subtitle="Acompanhe suas ligas, atividades e ligas públicas da CopaZone."
             >
               <DashboardPage />
             </ProtectedShellRoute>
@@ -189,7 +272,7 @@ function AppRoutes() {
               onLogout={logout}
               isLoggingOut={isLoggingOut}
               title="Minhas ligas"
-              subtitle="Ligas publicas e privadas aparecem aqui somente quando voce participa delas."
+              subtitle="Ligas públicas e privadas aparecem aqui quando você participa delas."
             >
               <MyLeaguesPage />
             </ProtectedShellRoute>
@@ -203,8 +286,8 @@ function AppRoutes() {
               isBooting={isBooting}
               onLogout={logout}
               isLoggingOut={isLoggingOut}
-              title="Ligas publicas"
-              subtitle="Explore ligas abertas. Ligas privadas permanecem escondidas ate voce estar inscrito."
+              title="Ligas públicas"
+              subtitle="Explore ligas abertas. Ligas privadas aparecem para você depois da inscrição."
             >
               <PublicLeaguesPage />
             </ProtectedShellRoute>
@@ -219,7 +302,7 @@ function AppRoutes() {
               onLogout={logout}
               isLoggingOut={isLoggingOut}
               title="Entrar em liga"
-              subtitle="Cole o codigo de convite para acessar uma liga privada."
+              subtitle="Cole o código de convite para acessar uma liga privada."
             >
               <JoinLeaguePage />
             </ProtectedShellRoute>
@@ -234,7 +317,7 @@ function AppRoutes() {
               onLogout={logout}
               isLoggingOut={isLoggingOut}
               title="Dados da Copa"
-              subtitle="Visualize os dados sincronizados da OpenLigaDB antes de liberar os palpites."
+              subtitle="Veja o calendário de jogos, grupos e chaveamento da Copa do Mundo."
             >
               <WorldCupDataPage />
             </ProtectedShellRoute>
@@ -268,7 +351,7 @@ function AppRoutes() {
               onLogout={logout}
               isLoggingOut={isLoggingOut}
               title="Liga"
-              subtitle="Acompanhe os dados iniciais da liga. Palpites entram na proxima fase."
+              subtitle="Veja os detalhes e partidas da sua liga."
             >
               <LeagueDetailPage />
             </ProtectedShellRoute>
@@ -283,7 +366,7 @@ function AppRoutes() {
               onLogout={logout}
               isLoggingOut={isLoggingOut}
               title="Criar liga"
-              subtitle="Configure uma liga publica ou privada para disputar a Copa com seus amigos."
+              subtitle="Configure uma liga pública ou privada para disputar a Copa com seus amigos."
             >
               <CreateLeaguePage />
             </ProtectedShellRoute>
