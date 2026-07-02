@@ -12,7 +12,7 @@ class BroadcastWorldCupPredictionLocks extends Command
 {
     protected $signature = 'world-cup:broadcast-prediction-locks';
 
-    protected $description = 'Emite eventos WebSocket quando palpites da Copa chegam ao horario de bloqueio.';
+    protected $description = 'Emite eventos WebSocket quando palpites da Copa chegam ao horário de bloqueio.';
 
     public function handle(): int
     {
