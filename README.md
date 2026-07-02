@@ -22,21 +22,26 @@ Gere uma `APP_KEY` no backend e copie para `.env.production`:
 docker compose run --rm backend php artisan key:generate --show
 ```
 
-Para testar localmente como producao:
+Para testar localmente como producao sem dominio publico, use
+`CADDY_SITE_ADDRESS=:80`, `HTTP_PORT=8081`, `HTTPS_PORT=8443`,
+`APP_URL=http://localhost:8081`, `SESSION_SECURE_COOKIE=false` e mantenha os
+dominios de Sanctum/CORS/Reverb apontando para `localhost`.
 
 ```sh
 docker compose --env-file .env.production -f docker-compose.prod.yml up --build
 ```
 
-Por padrao, o frontend fica em `http://127.0.0.1:8081`, a API em
-`http://127.0.0.1:8081/api/v1` e o Reverb passa pelo mesmo servidor web em
-`ws://127.0.0.1:8081/app`.
+Em producao, o Caddy publica `80` e `443`, gera HTTPS automaticamente e
+encaminha o trafego para o container `web`. A API fica em
+`https://seu-dominio/api/v1` e o Reverb passa pelo mesmo dominio em
+`wss://seu-dominio/app`.
 
-Na Oracle, ajuste `.env.production` com o dominio publico, portas, `APP_URL`,
-`VITE_API_BASE_URL`, `SANCTUM_STATEFUL_DOMAINS`, `CORS_ALLOWED_ORIGINS`,
-`REVERB_*` e senhas fortes antes de subir. Em HTTPS real, defina
-`SESSION_SECURE_COOKIE=true`, `VITE_REVERB_SCHEME=https` e
-`VITE_REVERB_PORT=443`.
+Na Oracle, use `CADDY_SITE_ADDRESS=seu-dominio`, `HTTP_PORT=80`,
+`HTTPS_PORT=443`, `APP_URL=https://seu-dominio`,
+`SESSION_SECURE_COOKIE=true`, `VITE_REVERB_SCHEME=https`,
+`VITE_REVERB_PORT=443`, alem de `SANCTUM_STATEFUL_DOMAINS`,
+`CORS_ALLOWED_ORIGINS`, `REVERB_*` e senhas fortes. O security list/firewall da
+VM deve liberar `80` e `443` para o Caddy.
 
 Para deploy manual com migration executada uma unica vez:
 
@@ -48,5 +53,5 @@ Para backup e restore local do PostgreSQL:
 
 ```sh
 sh scripts/backup.sh
-sh scripts/restore.sh backups/copazone-YYYYMMDD-HHMMSS.sql.gz
+sh scripts/restore.sh backups/copazone-YYYYMMDD-HHMMSS.dump
 ```

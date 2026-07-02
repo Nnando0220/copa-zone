@@ -55,6 +55,8 @@ services:
       dockerfile: Dockerfile.prod
       target: nginx
     restart: unless-stopped
+    volumes:
+      - backend_storage:/var/www/html/storage:ro
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/up >/dev/null 2>&1 || exit 1"]
       interval: 10s
@@ -162,8 +164,6 @@ services:
         VITE_REVERB_PORT: ${VITE_REVERB_PORT:-8081}
         VITE_REVERB_SCHEME: ${VITE_REVERB_SCHEME:-http}
     restart: unless-stopped
-    ports:
-      - "${HTTP_PORT:-8081}:80"
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/up >/dev/null 2>&1 || exit 1"]
       interval: 10s
@@ -173,7 +173,25 @@ services:
       - backend-web
       - reverb
 
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    environment:
+      CADDY_SITE_ADDRESS: ${CADDY_SITE_ADDRESS:?CADDY_SITE_ADDRESS is required}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   backend_storage:
   backend_cache:
+  caddy_data:
+  caddy_config:

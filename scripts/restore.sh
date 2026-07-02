@@ -11,7 +11,7 @@ if [ ! -f "${ENV_FILE}" ]; then
 fi
 
 if [ -z "${BACKUP_FILE}" ] || [ ! -f "${BACKUP_FILE}" ]; then
-    echo "Usage: scripts/restore.sh backups/copazone-YYYYMMDD-HHMMSS.sql.gz"
+    echo "Usage: scripts/restore.sh backups/copazone-YYYYMMDD-HHMMSS.dump"
     exit 1
 fi
 
@@ -23,6 +23,6 @@ if [ "${CONFIRMATION}" != "RESTORE" ]; then
     exit 1
 fi
 
-gunzip -c "${BACKUP_FILE}" | ${COMPOSE} exec -T postgres sh -c 'psql -U "$POSTGRES_USER" "$POSTGRES_DB"'
+${COMPOSE} exec -T postgres sh -c 'pg_restore --clean --if-exists --no-owner --no-acl -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < "${BACKUP_FILE}"
 
 echo "Restore finished."
