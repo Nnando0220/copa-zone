@@ -181,7 +181,6 @@ export function WorldCupDataPage() {
         {syncStatus?.sync && (
           <div className="sync-status-strip">
             <span>Atualização: <strong>{syncStatus.sync.status === 'synced' ? 'Em dia' : syncStatus.sync.status === 'failed' ? 'Atenção necessária' : 'Em andamento'}</strong></span>
-            <span>Próxima atualização: <strong>{formatSyncedAt(syncStatus.sync.next_attempt_at)}</strong></span>
             {syncStatus.sync.last_error && <span>Última mensagem: <strong>{syncStatus.sync.last_error}</strong></span>}
           </div>
         )}
