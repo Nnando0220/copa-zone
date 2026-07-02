@@ -4,9 +4,13 @@ docs/
 # Environment and local secrets
 **/.env
 **/.env.*
+!.env.production.example
 !**/.env.example
 !**/.env.docker.example
 !**/*.env.example
+*.pem
+*.key
+backups/
 
 # Dependencies and build output
 **/node_modules/
