@@ -259,6 +259,236 @@ h3 {
   font-weight: 800;
 }
 
+.landing-preview-section {
+  width: min(100%, 1120px);
+  margin-top: 56px;
+  display: grid;
+  gap: 24px;
+}
+
+.landing-preview-heading {
+  max-width: 720px;
+}
+
+.landing-preview-heading h2 {
+  margin: 8px 0 10px;
+  color: var(--cz-navy);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1.06;
+}
+
+.landing-preview-heading p {
+  color: #526258;
+  line-height: 1.7;
+}
+
+.landing-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.landing-preview-card {
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid #d5ddcf;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 50px rgba(16, 24, 39, 0.09);
+  overflow: hidden;
+}
+
+.preview-window-bar {
+  display: flex;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e3e9df;
+}
+
+.preview-window-bar span {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #c8d3ca;
+}
+
+.preview-window-bar span:first-child {
+  background: var(--cz-yellow);
+}
+
+.preview-window-bar span:last-child {
+  background: var(--cz-green);
+}
+
+.preview-shot-header {
+  display: grid;
+  gap: 4px;
+}
+
+.preview-shot-header small {
+  color: var(--cz-green);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.preview-shot-header strong {
+  color: var(--cz-navy);
+  font-size: 1.08rem;
+}
+
+.preview-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.preview-metrics span {
+  min-height: 70px;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  padding: 10px 6px;
+  border-radius: 6px;
+  background: #f3f7f1;
+  color: #627064;
+  font-size: 0.76rem;
+  text-align: center;
+}
+
+.preview-metrics b {
+  display: block;
+  color: var(--cz-navy);
+  font-size: 1.35rem;
+}
+
+.preview-league-row,
+.preview-prediction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 6px;
+  background: #f8faf6;
+  color: #526258;
+}
+
+.preview-league-row strong,
+.preview-prediction strong {
+  color: var(--cz-navy);
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.preview-bracket {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(86px, 0.72fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.preview-bracket > div {
+  display: grid;
+  gap: 6px;
+}
+
+.preview-bracket > div:not(.final) {
+  padding: 9px;
+  border: 1px solid #dce5d8;
+  border-radius: 6px;
+  background: #f8faf6;
+}
+
+.preview-bracket span {
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 9px;
+  border-radius: 5px;
+  background: #ffffff;
+  color: var(--cz-navy);
+  font-weight: 900;
+  font-size: 0.82rem;
+}
+
+.preview-bracket .final {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  position: relative;
+}
+
+.preview-bracket .final::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  background: #b9c7bd;
+}
+
+.preview-prediction {
+  margin-top: auto;
+}
+
+.preview-prediction span {
+  color: var(--cz-green);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.preview-ranking {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.preview-ranking li {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 6px;
+  background: #f8faf6;
+  color: #526258;
+}
+
+.preview-ranking b {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--cz-yellow);
+  color: var(--cz-navy);
+}
+
+.preview-ranking span,
+.preview-ranking strong {
+  color: var(--cz-navy);
+}
+
+.preview-live-pill {
+  width: fit-content;
+  margin-top: auto;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(8, 128, 92, 0.1);
+  color: var(--cz-green);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
 .auth-split-page,
 .register-page {
   min-height: 100vh;
@@ -6261,6 +6491,18 @@ h3 {
 
   .public-info-grid {
     grid-template-columns: 1fr;
+  }
+
+  .landing-preview-section {
+    margin-top: 36px;
+  }
+
+  .landing-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-preview-card {
+    min-height: auto;
   }
 
   .auth-mobile-back {

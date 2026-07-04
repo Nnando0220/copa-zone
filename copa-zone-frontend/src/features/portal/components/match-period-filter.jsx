@@ -1,7 +1,7 @@
 const PERIODS = [
   { value: 'all', label: 'Todas' },
   { value: 'current', label: 'Atuais' },
-  { value: 'upcoming', label: 'Proximas' },
+  { value: 'upcoming', label: 'Próximas' },
   { value: 'today', label: 'Hoje' },
   { value: 'finished', label: 'Finalizadas' },
 ];

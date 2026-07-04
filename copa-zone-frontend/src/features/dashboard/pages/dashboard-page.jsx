@@ -15,7 +15,7 @@ export function DashboardPage() {
     portalService
       .dashboard()
       .then((payload) => setDashboard(payload.data))
-      .catch((requestError) => setError(requestError.message || 'Nao foi possivel carregar o dashboard.'))
+      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar o painel.'))
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -47,7 +47,7 @@ export function DashboardPage() {
         </article>
         <article>
           <Globe2 size={21} />
-          <span>Publicas abertas</span>
+          <span>Públicas abertas</span>
           <strong>{summary.public_leagues_available_count ?? 0}</strong>
         </article>
       </section>
@@ -75,7 +75,7 @@ export function DashboardPage() {
         <div className="section-header">
           <div>
             <p className="eyebrow">Minhas ligas</p>
-            <h2>Ligas onde voce participa</h2>
+            <h2>Ligas onde você participa</h2>
           </div>
           <Link to="/ligas/minhas">Ver todas</Link>
         </div>

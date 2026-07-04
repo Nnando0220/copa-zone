@@ -6,7 +6,7 @@ import { WorldCupBracketView, WorldCupGroupPanel, WorldCupStatsPanel } from '../
 import { portalService } from '../services/portal-service';
 
 const tabs = [
-  { id: 'summary', label: 'Estatisticas' },
+  { id: 'summary', label: 'Estatísticas' },
   { id: 'groups', label: 'Fases' },
   { id: 'bracket', label: 'Chaveamento' },
   { id: 'matches', label: 'Partidas' },
@@ -57,7 +57,7 @@ export function WorldCupDataPage() {
         })
         .catch((requestError) => {
           if (isMounted) {
-            setError(requestError.message || 'Nao foi possivel carregar os dados da Copa.');
+            setError(requestError.message || 'Não foi possível carregar os dados da Copa.');
           }
         })
         .finally(() => {
@@ -103,7 +103,7 @@ export function WorldCupDataPage() {
         })
         .catch((requestError) => {
           if (isMounted) {
-            setError(requestError.message || 'Nao foi possivel carregar as partidas da Copa.');
+            setError(requestError.message || 'Não foi possível carregar as partidas da Copa.');
           }
         })
         .finally(() => {
@@ -153,8 +153,8 @@ export function WorldCupDataPage() {
       <div className="content-section world-cup-overview">
         <div className="section-header">
           <div>
-            <p className="eyebrow">OpenLigaDB</p>
-            <h2>{edition ? `${edition.name} ${edition.season}` : 'Dados ainda nao sincronizados'}</h2>
+            <p className="eyebrow">Copa do Mundo 2026</p>
+            <h2>{edition ? `${edition.name} ${edition.season}` : 'Dados ainda não atualizados'}</h2>
           </div>
           <span className="diagnostic-pill">{meta.groups_count ?? 0} grupos/fases</span>
         </div>
@@ -183,7 +183,7 @@ export function WorldCupDataPage() {
                 </button>
               ))}
             </div>
-            {selectedGroup ? <WorldCupGroupPanel group={selectedGroup} /> : <section className="empty-state">Nenhum grupo disponivel ainda.</section>}
+            {selectedGroup ? <WorldCupGroupPanel group={selectedGroup} /> : <section className="empty-state">Nenhum grupo disponível ainda.</section>}
           </div>
         )}
 

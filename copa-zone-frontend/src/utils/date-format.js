@@ -1,6 +1,6 @@
 const DISPLAY_TIMEZONE = 'America/Sao_Paulo';
 
-export function formatBrazilDateTime(value, fallback = 'Horario indefinido') {
+export function formatBrazilDateTime(value, fallback = 'Horário indefinido') {
   if (!value) {
     return fallback;
   }

@@ -54,7 +54,7 @@ class PredictionController extends Controller
 
         if ($prediction && $prediction->status !== 'pending') {
             throw ValidationException::withMessages([
-                'prediction' => 'Este palpite ja foi apurado e nao pode ser alterado.',
+                'prediction' => 'Este palpite já foi apurado e não pode ser alterado.',
             ]);
         }
 
@@ -123,13 +123,13 @@ class PredictionController extends Controller
 
         if (! $league->settings?->allow_prediction_cancellation) {
             throw ValidationException::withMessages([
-                'prediction' => 'Esta liga nao permite cancelamento de palpites.',
+                'prediction' => 'Esta liga não permite cancelamento de palpites.',
             ]);
         }
 
         if ($match && $this->lockAt($league, $match)->isPast()) {
             throw ValidationException::withMessages([
-                'prediction' => 'Este palpite ja foi bloqueado.',
+                'prediction' => 'Este palpite já foi bloqueado.',
             ]);
         }
 
@@ -182,25 +182,25 @@ class PredictionController extends Controller
     {
         if (! $this->structure->matchHasResolvedParticipants($match)) {
             throw ValidationException::withMessages([
-                'match' => 'Esta partida ainda aguarda as selecoes classificadas.',
+                'match' => 'Esta partida ainda aguarda as seleções classificadas.',
             ]);
         }
 
         if ($match->starts_at === null) {
             throw ValidationException::withMessages([
-                'match' => 'Esta partida ainda nao possui horario definido.',
+                'match' => 'Esta partida ainda não possui horário definido.',
             ]);
         }
 
         if (in_array($match->status, ['finished', 'postponed', 'cancelled', 'unknown'], true)) {
             throw ValidationException::withMessages([
-                'match' => 'Esta partida nao esta aberta para palpite.',
+                'match' => 'Esta partida não está aberta para palpite.',
             ]);
         }
 
         if ($this->lockAt($league, $match)->isPast()) {
             throw ValidationException::withMessages([
-                'match' => 'Esta partida ja foi bloqueada para novos palpites.',
+                'match' => 'Esta partida já foi bloqueada para novos palpites.',
             ]);
         }
     }

@@ -47,7 +47,7 @@ class SyncWorldCupDataAction
         $season ??= (int) config('services.openligadb.world_cup.season');
 
         if ($shortcut === '') {
-            throw new RuntimeException('OPENLIGADB_WORLD_CUP_SHORTCUT nao foi configurado.');
+            throw new RuntimeException('OPENLIGADB_WORLD_CUP_SHORTCUT não foi configurado.');
         }
 
         $state = $this->syncState($shortcut, $season);
@@ -224,7 +224,7 @@ class SyncWorldCupDataAction
 
             $translatedName = $teamName
                 ? $this->translator->translateTeam($teamName)
-                : ($team->name ?: 'Selecao '.$providerTeamId);
+                : ($team->name ?: 'Seleção '.$providerTeamId);
 
             $team->forceFill([
                 'name' => $translatedName,

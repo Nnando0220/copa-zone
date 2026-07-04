@@ -14,7 +14,7 @@ export function MyLeaguesPage() {
     portalService
       .myLeagues()
       .then((payload) => setLeagues(payload.data ?? []))
-      .catch((requestError) => setError(requestError.message || 'Nao foi possivel carregar suas ligas.'))
+      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar suas ligas.'))
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -30,8 +30,8 @@ export function MyLeaguesPage() {
     <section className="content-section">
       {leagues.length === 0 ? (
         <EmptyState
-          title="Voce ainda nao esta inscrito em ligas"
-          description="Crie sua primeira liga para comecar o fluxo da CopaZone com seus amigos."
+          title="Você ainda não está inscrito em ligas"
+          description="Crie sua primeira liga e convide seus amigos para o bolão."
           action={<Link to="/ligas/criar">Criar liga</Link>}
         />
       ) : (

@@ -465,7 +465,7 @@ class WorldCupDataApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.bracket.stages.0.code', 'round_of_32')
             ->assertJsonPath('data.bracket.stages.5.code', 'final')
-            ->assertJsonPath('data.bracket.stages.5.matches.0.match_state_label', 'Aguardando selecoes');
+            ->assertJsonPath('data.bracket.stages.5.matches.0.match_state_label', 'Aguardando seleções');
     }
 
     public function test_bracket_prefers_round_name_when_persisted_stage_code_is_stale(): void

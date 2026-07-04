@@ -12,7 +12,7 @@ class SyncWorldCupData extends Command
 
     protected $aliases = ['football:openligadb:sync-matches'];
 
-    protected $description = 'Sincroniza selecoes e partidas da Copa pela OpenLigaDB.';
+    protected $description = 'Sincroniza seleções e partidas da Copa.';
 
     public function handle(SyncWorldCupDataAction $action): int
     {
@@ -30,9 +30,9 @@ class SyncWorldCupData extends Command
             return self::FAILURE;
         }
 
-        $this->info('Status da sincronizacao da Copa: '.$result['status'].'.');
-        $this->line('Edicao: '.($result['edition'] ? $result['edition']->name.' '.$result['edition']->season : 'nenhuma edicao sincronizada'));
-        $this->line('Selecoes: '.$result['teams']);
+        $this->info('Status da sincronização da Copa: '.$result['status'].'.');
+        $this->line('Edição: '.($result['edition'] ? $result['edition']->name.' '.$result['edition']->season : 'nenhuma edição sincronizada'));
+        $this->line('Seleções: '.$result['teams']);
         $this->line('Grupos/fases: '.$result['groups']);
         $this->line('Partidas: '.$result['matches']);
 
