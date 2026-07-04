@@ -386,6 +386,134 @@ class WorldCupDataApiTest extends TestCase
         ]);
     }
 
+    public function test_world_cup_sync_treats_low_scoring_penalty_labeled_result_as_extra_time(): void
+    {
+        config()->set('services.openligadb.world_cup.shortcut', 'wm26');
+        config()->set('services.openligadb.world_cup.season', 2026);
+
+        Http::fake([
+            'https://api.openligadb.de/getmatchdata/wm26/2026' => Http::response([
+                [
+                    'matchID' => 'extra-time-low-penalty-label-1',
+                    'matchDateTime' => '2026-07-01T16:00:00Z',
+                    'timeZoneID' => 'UTC',
+                    'leagueShortcut' => 'wm26',
+                    'leagueName' => 'FIFA World Cup',
+                    'leagueSeason' => 2026,
+                    'group' => [
+                        'groupID' => 49772,
+                        'groupName' => 'Sechzehntelfinale',
+                        'groupOrderID' => 4,
+                    ],
+                    'team1' => [
+                        'teamId' => 755,
+                        'teamName' => 'England',
+                        'shortName' => 'ENG',
+                    ],
+                    'team2' => [
+                        'teamId' => 4991,
+                        'teamName' => 'DR Kongo',
+                        'shortName' => 'COD',
+                    ],
+                    'matchIsFinished' => true,
+                    'matchResults' => [
+                        [
+                            'resultName' => 'Endergebnis',
+                            'resultTypeID' => 2,
+                            'resultOrderID' => 2,
+                            'pointsTeam1' => 1,
+                            'pointsTeam2' => 1,
+                        ],
+                        [
+                            'resultName' => 'Nach Elfmeterschiessen',
+                            'resultTypeID' => 2,
+                            'resultOrderID' => 3,
+                            'pointsTeam1' => 2,
+                            'pointsTeam2' => 1,
+                        ],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $this->artisan('world-cup:sync --matches-only --essential')
+            ->assertSuccessful();
+
+        $england = Team::query()->where('provider_team_id', '755')->firstOrFail();
+
+        $this->assertDatabaseHas('matches', [
+            'provider_fixture_id' => 'extra-time-low-penalty-label-1',
+            'home_score' => 2,
+            'away_score' => 1,
+            'home_penalty_score' => null,
+            'away_penalty_score' => null,
+            'winner_team_id' => $england->id,
+            'winner_source' => 'extra_time',
+        ]);
+    }
+
+    public function test_world_cup_api_normalizes_stale_low_scoring_penalty_result_from_database(): void
+    {
+        $user = User::factory()->create();
+        $edition = TournamentEdition::create([
+            'name' => 'WM 2026',
+            'season' => 2026,
+            'provider' => 'openligadb',
+            'provider_league_id' => 'wm26',
+            'status' => 'synced',
+            'last_synced_at' => now(),
+        ]);
+        $stage = TournamentGroup::create([
+            'tournament_edition_id' => $edition->id,
+            'name' => '16 avos de final',
+            'external_name' => 'Sechzehntelfinale',
+            'internal_code' => 'round_of_32',
+            'display_name' => '16 avos de final',
+        ]);
+        $england = Team::create([
+            'name' => 'Inglaterra',
+            'display_name_pt_br' => 'Inglaterra',
+            'code' => 'ENG',
+            'provider' => 'openligadb',
+            'provider_team_id' => '755',
+        ]);
+        $congo = Team::create([
+            'name' => 'RD Congo',
+            'display_name_pt_br' => 'RD Congo',
+            'code' => 'COD',
+            'provider' => 'openligadb',
+            'provider_team_id' => '4991',
+        ]);
+
+        WorldCupMatch::create([
+            'tournament_edition_id' => $edition->id,
+            'tournament_group_id' => $stage->id,
+            'home_team_id' => $england->id,
+            'away_team_id' => $congo->id,
+            'winner_team_id' => $england->id,
+            'provider' => 'openligadb',
+            'provider_fixture_id' => 'stale-low-penalty-1',
+            'round' => 'Sechzehntelfinale',
+            'starts_at' => now()->subDay(),
+            'status' => 'finished',
+            'home_score' => 1,
+            'away_score' => 1,
+            'home_penalty_score' => 2,
+            'away_penalty_score' => 1,
+            'winner_source' => 'penalties',
+        ]);
+
+        $this->actingAs($user)
+            ->getJson('/api/v1/world-cup/matches')
+            ->assertOk()
+            ->assertJsonPath('data.matches.0.home_score', 2)
+            ->assertJsonPath('data.matches.0.away_score', 1)
+            ->assertJsonPath('data.matches.0.home_penalty_score', null)
+            ->assertJsonPath('data.matches.0.away_penalty_score', null)
+            ->assertJsonPath('data.matches.0.winner_source', 'extra_time')
+            ->assertJsonPath('data.matches.0.winner_side', 'home');
+    }
+
 
     public function test_league_matches_respect_private_league_membership(): void
     {

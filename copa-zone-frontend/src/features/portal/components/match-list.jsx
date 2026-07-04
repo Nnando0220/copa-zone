@@ -16,6 +16,7 @@ function scoreLabel(match) {
   }
 
   const penalties = match.winner_source === 'penalties'
+    && Number(match.home_score) === Number(match.away_score)
     && match.home_penalty_score !== null
     && match.home_penalty_score !== undefined
     && match.away_penalty_score !== null

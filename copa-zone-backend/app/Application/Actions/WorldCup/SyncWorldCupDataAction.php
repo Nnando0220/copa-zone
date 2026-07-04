@@ -494,13 +494,22 @@ class SyncWorldCupDataAction
             return $resolvedFinalResult;
         }
 
-        return $nonPenaltyResults
+        $decidingCandidate = $results
             ->sortByDesc(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
             ->first(function (array $result) use ($resolvedFinalResult): bool {
                 return $this->hasDifferentScores($result)
                     && (int) data_get($result, 'resultOrderID') > (int) data_get($resolvedFinalResult, 'resultOrderID');
-            })
-            ?? $resolvedFinalResult;
+            });
+
+        if ($decidingCandidate === null) {
+            return $resolvedFinalResult;
+        }
+
+        if ($this->isPenaltyResult($decidingCandidate) && $this->isPlausiblePenaltyShootout($decidingCandidate)) {
+            return $resolvedFinalResult;
+        }
+
+        return $decidingCandidate;
     }
 
     /**
@@ -543,7 +552,7 @@ class SyncWorldCupDataAction
             ->sortByDesc(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
             ->first();
 
-        if ($namedPenalty !== null) {
+        if ($namedPenalty !== null && $this->hasEqualScores($finalResult) && $this->isPlausiblePenaltyShootout($namedPenalty)) {
             return $namedPenalty;
         }
 
@@ -553,7 +562,7 @@ class SyncWorldCupDataAction
 
         return $results
             ->sortByDesc(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
-            ->first(fn (array $result): bool => $this->hasDifferentScores($result) && $result !== $finalResult);
+            ->first(fn (array $result): bool => $this->hasDifferentScores($result) && $result !== $finalResult && $this->isPlausiblePenaltyShootout($result));
     }
 
     /**
@@ -568,6 +577,21 @@ class SyncWorldCupDataAction
         return (int) data_get($result, 'pointsTeam1') > (int) data_get($result, 'pointsTeam2')
             ? $homeProviderId
             : $awayProviderId;
+    }
+
+    /**
+     * @param array<string, mixed>|null $result
+     */
+    private function isPlausiblePenaltyShootout(?array $result): bool
+    {
+        if (! $this->hasDifferentScores($result)) {
+            return false;
+        }
+
+        $home = (int) data_get($result, 'pointsTeam1');
+        $away = (int) data_get($result, 'pointsTeam2');
+
+        return max($home, $away) >= 3 || ($home + $away) >= 5;
     }
 
     /**

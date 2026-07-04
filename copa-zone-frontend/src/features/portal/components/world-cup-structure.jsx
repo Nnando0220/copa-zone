@@ -63,6 +63,10 @@ function penaltyScoreLabel(match) {
     return null;
   }
 
+  if (Number(match.home_score) !== Number(match.away_score)) {
+    return null;
+  }
+
   if (
     match.home_penalty_score === null
     || match.home_penalty_score === undefined
