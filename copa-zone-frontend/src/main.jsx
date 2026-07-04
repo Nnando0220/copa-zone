@@ -17,9 +17,10 @@ import { PublicLeaguesPage } from './features/portal/pages/public-leagues-page';
 import { WorldCupDataPage } from './features/portal/pages/world-cup-data-page';
 import './styles.css';
 
-const SITE_URL = 'https://copazone.app';
+const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://copazone.app').replace(/\/+$/, '');
+const DEFAULT_IMAGE = `${SITE_URL}/images/stadium-invite-bg.png`;
 const DEFAULT_DESCRIPTION =
-  'O CopaZone ajuda voce a criar ligas, convidar amigos e acompanhar palpites da Copa do Mundo 2026.';
+  'O CopaZone ajuda você a criar ligas, convidar amigos e acompanhar palpites da Copa do Mundo 2026.';
 
 const publicPages = {
   '/como-funciona': {
@@ -28,11 +29,11 @@ const publicPages = {
     description:
       'Entenda como criar uma liga, convidar amigos, registrar palpites e acompanhar a disputa da Copa do Mundo 2026.',
     intro:
-      'O CopaZone organiza a disputa em um fluxo simples: voce cria ou entra em uma liga, faz seus palpites e acompanha a pontuacao com seus amigos.',
+      'O CopaZone organiza a disputa em um fluxo simples: você cria ou entra em uma liga, faz seus palpites e acompanha a pontuação com seus amigos.',
     sections: [
-      { title: 'Crie sua liga', text: 'Monte uma liga para reunir amigos, familia ou colegas em uma disputa simples durante a Copa.' },
-      { title: 'Convide participantes', text: 'Compartilhe o acesso da liga com quem vai participar e mantenha todos no mesmo espaco.' },
-      { title: 'Acompanhe a disputa', text: 'Veja palpites, resultados e pontuacao em uma experiencia pensada para ser clara do inicio ao fim.' },
+      { title: 'Crie sua liga', text: 'Monte uma liga para reunir amigos, família ou colegas em uma disputa simples durante a Copa.' },
+      { title: 'Convide participantes', text: 'Compartilhe o acesso da liga com quem vai participar e mantenha todos no mesmo espaço.' },
+      { title: 'Acompanhe a disputa', text: 'Veja palpites, resultados e pontuação em uma experiência pensada para ser clara do início ao fim.' },
     ],
   },
   '/copa-do-mundo-2026': {
@@ -43,35 +44,35 @@ const publicPages = {
     intro:
       'O CopaZone foi pensado para transformar os jogos da Copa do Mundo 2026 em uma disputa leve entre amigos.',
     sections: [
-      { title: 'Jogos da Copa', text: 'Acompanhe os confrontos da competicao dentro das ligas em que voce participa.' },
-      { title: 'Palpites organizados', text: 'Registre seus palpites em um lugar unico, sem depender de planilhas ou mensagens espalhadas.' },
-      { title: 'Disputa entre amigos', text: 'Acompanhe a pontuacao da liga e veja quem esta melhor na rodada.' },
+      { title: 'Jogos da Copa', text: 'Acompanhe os confrontos da competição dentro das ligas em que você participa.' },
+      { title: 'Palpites organizados', text: 'Registre seus palpites em um lugar único, sem depender de planilhas ou mensagens espalhadas.' },
+      { title: 'Disputa entre amigos', text: 'Acompanhe a pontuação da liga e veja quem está melhor na rodada.' },
     ],
   },
   '/regras': {
     eyebrow: 'Regras',
-    title: 'Regras do bolao da CopaZone',
+    title: 'Regras do bolão da CopaZone',
     description:
-      'Conheca as regras gerais para participar de ligas, enviar palpites e acompanhar a pontuacao no CopaZone.',
+      'Conheça as regras gerais para participar de ligas, enviar palpites e acompanhar a pontuação no CopaZone.',
     intro:
-      'As regras ajudam a manter a disputa simples, justa e facil de acompanhar para todos os participantes.',
+      'As regras ajudam a manter a disputa simples, justa e fácil de acompanhar para todos os participantes.',
     sections: [
       { title: 'Palpites antes do jogo', text: 'Envie seus palpites dentro do prazo indicado para que todos participem em igualdade.' },
-      { title: 'Ligas com convite', text: 'Cada liga reune seus proprios participantes, mantendo a disputa no grupo certo.' },
-      { title: 'Pontuacao da liga', text: 'A classificacao mostra o desempenho dos participantes conforme os jogos acontecem.' },
+      { title: 'Ligas com convite', text: 'Cada liga reúne seus próprios participantes, mantendo a disputa no grupo certo.' },
+      { title: 'Pontuação da liga', text: 'A classificação mostra o desempenho dos participantes conforme os jogos acontecem.' },
     ],
   },
   '/faq': {
     eyebrow: 'FAQ',
     title: 'Perguntas frequentes sobre a CopaZone',
     description:
-      'Tire duvidas sobre cadastro, ligas, palpites e funcionamento geral do CopaZone.',
+      'Tire dúvidas sobre cadastro, ligas, palpites e funcionamento geral do CopaZone.',
     intro:
-      'Reunimos as principais duvidas para ajudar novos participantes a entenderem rapidamente como usar a CopaZone.',
+      'Reunimos as principais dúvidas para ajudar novos participantes a entenderem rapidamente como usar a CopaZone.',
     sections: [
-      { title: 'Preciso criar conta?', text: 'Sim. O cadastro permite guardar suas ligas, seus palpites e sua pontuacao.' },
-      { title: 'Posso convidar amigos?', text: 'Sim. A ideia do CopaZone e reunir pessoas em ligas para acompanhar a Copa juntas.' },
-      { title: 'A CopaZone e oficial da FIFA?', text: 'Nao. A CopaZone e um aplicativo recreativo independente para boloes e ligas entre amigos.' },
+      { title: 'Preciso criar conta?', text: 'Sim. O cadastro permite guardar suas ligas, seus palpites e sua pontuação.' },
+      { title: 'Posso convidar amigos?', text: 'Sim. A ideia do CopaZone é reunir pessoas em ligas para acompanhar a Copa juntas.' },
+      { title: 'A CopaZone é oficial da FIFA?', text: 'Não. A CopaZone é um aplicativo recreativo independente para bolões e ligas entre amigos.' },
     ],
   },
 };
@@ -87,23 +88,39 @@ function upsertMeta(selector, createElement, attributes) {
   Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
 }
 
-function Seo({ title, description = DEFAULT_DESCRIPTION, path = '/', robots = 'index,follow' }) {
+function removeElement(selector) {
+  document.head.querySelector(selector)?.remove();
+}
+
+function Seo({ title, description = DEFAULT_DESCRIPTION, path, robots = 'index,follow' }) {
+  const location = useLocation();
+
   useEffect(() => {
-    const fullTitle = title ? `${title} | CopaZone` : 'CopaZone | Bolao da Copa do Mundo 2026';
-    const canonicalUrl = `${SITE_URL}${path === '/' ? '/' : path}`;
+    const currentPath = path || location.pathname;
+    const canonicalUrl = currentPath === '/' ? `${SITE_URL}/` : `${SITE_URL}${currentPath}`;
+    const fullTitle = title ? `${title} | CopaZone` : 'CopaZone | Bolão da Copa do Mundo 2026';
+    const isIndexable = !robots.toLowerCase().includes('noindex');
 
     document.title = fullTitle;
     upsertMeta('meta[name="description"]', () => document.createElement('meta'), { name: 'description', content: description });
     upsertMeta('meta[name="robots"]', () => document.createElement('meta'), { name: 'robots', content: robots });
-    upsertMeta('link[rel="canonical"]', () => {
-      const link = document.createElement('link');
-      link.setAttribute('rel', 'canonical');
-      return link;
-    }, { href: canonicalUrl });
+    if (isIndexable) {
+      upsertMeta('link[rel="canonical"]', () => {
+        const link = document.createElement('link');
+        link.setAttribute('rel', 'canonical');
+        return link;
+      }, { href: canonicalUrl });
+      upsertMeta('meta[property="og:url"]', () => document.createElement('meta'), { property: 'og:url', content: canonicalUrl });
+    } else {
+      removeElement('link[rel="canonical"]');
+      removeElement('meta[property="og:url"]');
+    }
     upsertMeta('meta[property="og:title"]', () => document.createElement('meta'), { property: 'og:title', content: fullTitle });
     upsertMeta('meta[property="og:description"]', () => document.createElement('meta'), { property: 'og:description', content: description });
-    upsertMeta('meta[property="og:url"]', () => document.createElement('meta'), { property: 'og:url', content: canonicalUrl });
-  }, [description, path, robots, title]);
+    upsertMeta('meta[property="og:image"]', () => document.createElement('meta'), { property: 'og:image', content: DEFAULT_IMAGE });
+    upsertMeta('meta[name="twitter:card"]', () => document.createElement('meta'), { name: 'twitter:card', content: 'summary_large_image' });
+    upsertMeta('meta[name="twitter:image"]', () => document.createElement('meta'), { name: 'twitter:image', content: DEFAULT_IMAGE });
+  }, [description, location.pathname, path, robots, title]);
 
   return null;
 }
@@ -111,7 +128,7 @@ function Seo({ title, description = DEFAULT_DESCRIPTION, path = '/', robots = 'i
 function GuardScreen({ title = 'Validando sessão' }) {
   return (
     <main className="auth-shell">
-      <Seo title="Validando sessao" robots="noindex,nofollow" />
+      <Seo title="Validando sessão" robots="noindex,nofollow" />
       <section className="auth-panel compact">
         <p className="eyebrow">CopaZone</p>
         <h1>{title}</h1>
@@ -124,16 +141,16 @@ function LandingPage() {
   return (
     <main className="landing-page">
       <Seo
-        title="Bolao da Copa do Mundo 2026"
-        description="Crie uma liga da Copa do Mundo 2026, convide amigos e acompanhe palpites e pontuacao no CopaZone."
+        title="Bolão da Copa do Mundo 2026"
+        description="Crie uma liga da Copa do Mundo 2026, convide amigos e acompanhe palpites e pontuação no CopaZone."
         path="/"
       />
       <section className="landing-hero">
         <div>
           <p className="eyebrow">CopaZone</p>
-          <h1>Bolao da Copa do Mundo entre amigos</h1>
+          <h1>Bolão da Copa do Mundo entre amigos</h1>
           <p>
-            Crie sua liga, convide participantes e acompanhe palpites e pontuacao durante a Copa do Mundo.
+            Crie sua liga, convide participantes e acompanhe palpites e pontuação durante a Copa do Mundo.
           </p>
           <div className="landing-actions">
             <Link to="/login">Entrar</Link>
@@ -148,9 +165,9 @@ function LandingPage() {
 
         <div className="landing-summary">
           {[
-            { icon: ShieldCheck, title: 'Conta protegida', desc: 'Acesse suas ligas e seus palpites com seguranca.' },
-            { icon: Users, title: 'Ligas com amigos', desc: 'Reuna seu grupo em uma disputa simples de acompanhar.' },
-            { icon: Trophy, title: 'Copa do Mundo', desc: 'Palpites e pontuacao focados nos jogos da Copa.' },
+            { icon: ShieldCheck, title: 'Conta protegida', desc: 'Acesse suas ligas e seus palpites com segurança.' },
+            { icon: Users, title: 'Ligas com amigos', desc: 'Reúna seu grupo em uma disputa simples de acompanhar.' },
+            { icon: Trophy, title: 'Copa do Mundo', desc: 'Palpites e pontuação focados nos jogos da Copa.' },
           ].map((item) => {
             const Icon = item.icon;
 
@@ -288,12 +305,30 @@ function PublicInfoPage({ page, path }) {
           ))}
         </div>
 
-        <nav className="public-info-nav" aria-label="Paginas publicas da CopaZone">
+        <nav className="public-info-nav" aria-label="Páginas públicas da CopaZone">
           <Link to="/como-funciona">Como funciona</Link>
           <Link to="/copa-do-mundo-2026">Copa 2026</Link>
           <Link to="/regras">Regras</Link>
           <Link to="/faq">FAQ</Link>
         </nav>
+      </section>
+    </main>
+  );
+}
+
+function NotFoundPage() {
+  return (
+    <main className="not-found-page">
+      <Seo
+        title="Página não encontrada"
+        description="O endereço informado não existe ou não está mais disponível no CopaZone."
+        robots="noindex,nofollow"
+      />
+      <section className="not-found-panel">
+        <p className="eyebrow">Erro 404</p>
+        <h1>Página não encontrada</h1>
+        <p>O endereço informado não existe ou não está mais disponível.</p>
+        <Link to="/">Voltar para o início</Link>
       </section>
     </main>
   );
@@ -525,7 +560,7 @@ function AppRoutes() {
             </ProtectedShellRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Toaster richColors position="top-right" />
     </>
