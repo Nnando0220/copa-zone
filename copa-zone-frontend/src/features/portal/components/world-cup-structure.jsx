@@ -59,6 +59,10 @@ function scoreLabel(match) {
 }
 
 function penaltyScoreLabel(match) {
+  if (match.winner_source !== 'penalties') {
+    return null;
+  }
+
   if (
     match.home_penalty_score === null
     || match.home_penalty_score === undefined

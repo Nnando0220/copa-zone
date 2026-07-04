@@ -176,6 +176,135 @@ h3 {
   color: #647067;
 }
 
+.public-info-page {
+  align-items: start;
+}
+
+.public-info-shell {
+  width: min(100%, 1080px);
+  display: grid;
+  gap: 22px;
+}
+
+.public-back-link {
+  width: fit-content;
+  color: var(--cz-green);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.public-info-hero,
+.public-info-grid article,
+.public-info-nav {
+  border: 1px solid #d5ddcf;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 50px rgba(16, 24, 39, 0.08);
+}
+
+.public-info-hero {
+  padding: clamp(24px, 5vw, 44px);
+}
+
+.public-info-hero h1 {
+  max-width: 820px;
+  margin: 10px 0 14px;
+  color: var(--cz-navy);
+  font-size: clamp(2.1rem, 5vw, 4.2rem);
+  line-height: 1;
+}
+
+.public-info-hero p {
+  max-width: 760px;
+  color: #526258;
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.public-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.public-info-grid article {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+}
+
+.public-info-grid strong {
+  color: var(--cz-navy);
+  font-size: 1.05rem;
+}
+
+.public-info-grid span {
+  color: #647067;
+  line-height: 1.65;
+}
+
+.public-info-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px;
+}
+
+.public-info-nav a {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #f8faf6;
+  color: var(--cz-green);
+  font-weight: 800;
+}
+
+.not-found-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(4, 120, 87, 0.14), transparent 34%),
+    linear-gradient(315deg, rgba(246, 196, 83, 0.2), transparent 28%),
+    var(--cz-cream);
+}
+
+.not-found-panel {
+  width: min(100%, 620px);
+  display: grid;
+  gap: 14px;
+  padding: clamp(24px, 5vw, 42px);
+  border: 1px solid #d5ddcf;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 50px rgba(16, 24, 39, 0.1);
+}
+
+.not-found-panel h1 {
+  color: var(--cz-navy);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1;
+}
+
+.not-found-panel p:not(.eyebrow) {
+  color: #526258;
+  line-height: 1.7;
+}
+
+.not-found-panel a {
+  width: fit-content;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: var(--cz-green);
+  color: var(--cz-white);
+  font-weight: 900;
+}
+
 .landing-preview-section {
   width: min(100%, 1120px);
   margin-top: 56px;
@@ -1562,6 +1691,10 @@ h3 {
   border: 1px solid rgba(16, 24, 39, 0.08);
   border-radius: 8px;
   background: var(--cz-white);
+}
+
+.world-cup-data-page .league-copa-tabs {
+  margin-bottom: 22px;
 }
 
 .league-copa-tabs button,
@@ -6400,6 +6533,10 @@ h3 {
 
   .landing-summary {
     margin-top: 24px;
+  }
+
+  .public-info-grid {
+    grid-template-columns: 1fr;
   }
 
   .landing-preview-section {
