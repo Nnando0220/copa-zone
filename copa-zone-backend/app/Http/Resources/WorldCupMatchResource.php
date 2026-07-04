@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Support\OpenLigaDbTranslationService;
+use App\Support\WorldCupMatchResultNormalizer;
 
 class WorldCupMatchResource extends JsonResource
 {
@@ -17,6 +18,7 @@ class WorldCupMatchResource extends JsonResource
         $matchState = $this->matchState($request);
         $canPredict = $this->can_predict ?? ($matchState === 'open_for_prediction' && $this->resource->hasResolvedTeams());
         $displayTimezone = (string) config('services.openligadb.display_timezone', 'America/Sao_Paulo');
+        $result = WorldCupMatchResultNormalizer::normalize($this->resource);
 
         return [
             'id' => $this->id,
@@ -34,13 +36,13 @@ class WorldCupMatchResource extends JsonResource
             'match_state_label' => $translator->translateStatus($matchState),
             'status_short' => $this->status_short,
             'elapsed' => $this->elapsed,
-            'home_score' => $this->home_score,
-            'away_score' => $this->away_score,
-            'home_penalty_score' => $this->home_penalty_score,
-            'away_penalty_score' => $this->away_penalty_score,
+            'home_score' => $result['home_score'],
+            'away_score' => $result['away_score'],
+            'home_penalty_score' => $result['home_penalty_score'],
+            'away_penalty_score' => $result['away_penalty_score'],
             'winner_team_id' => $this->winner_team_id,
             'winner_side' => $this->winnerSide(),
-            'winner_source' => $this->winner_source,
+            'winner_source' => $result['winner_source'],
             'prediction_status' => $canPredict ? 'open' : ($this->status === 'finished' ? 'settled' : 'locked'),
             'can_predict' => (bool) $canPredict,
             'group_code' => $this->group_code,

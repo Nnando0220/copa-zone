@@ -5,6 +5,7 @@ namespace App\Application\Actions\Prediction;
 use App\Events\WorldCupPredictionScored;
 use App\Models\League;
 use App\Models\Prediction;
+use App\Support\WorldCupMatchResultNormalizer;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -64,24 +65,27 @@ class ScoreFinishedPredictionsAction
     {
         $match = $prediction->match;
         $settings = $prediction->league->settings;
-        $winnerMatches = $this->winnerSelectionMatches($prediction);
+        $officialResult = WorldCupMatchResultNormalizer::normalize($match);
+        $officialHomeScore = (int) $officialResult['home_score'];
+        $officialAwayScore = (int) $officialResult['away_score'];
+        $winnerMatches = $this->winnerSelectionMatches($prediction, $officialResult);
 
         if (
-            $prediction->predicted_home_score === $match->home_score
-            && $prediction->predicted_away_score === $match->away_score
+            $prediction->predicted_home_score === $officialHomeScore
+            && $prediction->predicted_away_score === $officialAwayScore
             && $winnerMatches
         ) {
             return [(int) ($settings?->points_exact_score ?? 5), 'exact_score'];
         }
 
         $predictedDifference = $prediction->predicted_home_score - $prediction->predicted_away_score;
-        $officialDifference = $match->home_score - $match->away_score;
+        $officialDifference = $officialHomeScore - $officialAwayScore;
 
         if ($predictedDifference === $officialDifference && $winnerMatches) {
             return [(int) ($settings?->points_correct_goal_difference ?? 3), 'goal_difference'];
         }
 
-        if ($this->predictedOutcome($prediction) === $this->officialOutcome($match)) {
+        if ($this->predictedOutcome($prediction) === $this->officialOutcome($match, $officialResult)) {
             return [(int) ($settings?->points_correct_outcome_scoreline ?? 2), 'outcome'];
         }
 
@@ -109,23 +113,33 @@ class ScoreFinishedPredictionsAction
         return $this->outcome($prediction->predicted_home_score, $prediction->predicted_away_score);
     }
 
-    private function officialOutcome($match): string
+    /**
+     * @param array{home_score: int|null, away_score: int|null} $officialResult
+     */
+    private function officialOutcome($match, array $officialResult): string
     {
         $winnerSide = $this->officialWinnerSide($match);
+        $homeScore = (int) $officialResult['home_score'];
+        $awayScore = (int) $officialResult['away_score'];
 
-        if ($match->home_score === $match->away_score && $winnerSide !== null) {
+        if ($homeScore === $awayScore && $winnerSide !== null) {
             return $winnerSide.'_win';
         }
 
-        return $this->outcome($match->home_score, $match->away_score);
+        return $this->outcome($homeScore, $awayScore);
     }
 
-    private function winnerSelectionMatches(Prediction $prediction): bool
+    /**
+     * @param array{home_score: int|null, away_score: int|null} $officialResult
+     */
+    private function winnerSelectionMatches(Prediction $prediction, array $officialResult): bool
     {
         $match = $prediction->match;
         $winnerSide = $this->officialWinnerSide($match);
+        $homeScore = (int) $officialResult['home_score'];
+        $awayScore = (int) $officialResult['away_score'];
 
-        if ($match->home_score !== $match->away_score || $winnerSide === null) {
+        if ($homeScore !== $awayScore || $winnerSide === null) {
             return true;
         }
 
