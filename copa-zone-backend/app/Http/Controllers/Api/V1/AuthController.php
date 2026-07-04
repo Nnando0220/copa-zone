@@ -44,7 +44,7 @@ class AuthController extends Controller
 
         if (! Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                'email' => $this->translatedMessage('auth.failed', 'E-mail ou senha incorretos.'),
             ]);
         }
 
@@ -122,7 +122,7 @@ class AuthController extends Controller
 
         if ($status !== Password::PASSWORD_RESET) {
             throw ValidationException::withMessages([
-                'email' => __($status),
+                'email' => $this->passwordResetStatusMessage($status),
             ]);
         }
 
@@ -131,5 +131,30 @@ class AuthController extends Controller
             'meta' => [],
             'message' => 'Senha redefinida com sucesso.',
         ]);
+    }
+
+    private function translatedMessage(string $key, string $fallback): string
+    {
+        $translated = __($key);
+        $defaultEnglishMessages = [
+            'auth.failed' => 'These credentials do not match our records.',
+            Password::INVALID_TOKEN => 'This password reset token is invalid.',
+            Password::INVALID_USER => "We can't find a user with that email address.",
+            Password::RESET_THROTTLED => 'Please wait before retrying.',
+        ];
+
+        return $translated === $key || ($defaultEnglishMessages[$key] ?? null) === $translated
+            ? $fallback
+            : $translated;
+    }
+
+    private function passwordResetStatusMessage(string $status): string
+    {
+        return match ($status) {
+            Password::INVALID_TOKEN => $this->translatedMessage($status, 'O link para redefinir a senha é inválido ou expirou.'),
+            Password::INVALID_USER => $this->translatedMessage($status, 'Não encontramos um usuário com esse e-mail.'),
+            Password::RESET_THROTTLED => $this->translatedMessage($status, 'Aguarde alguns instantes antes de tentar novamente.'),
+            default => $this->translatedMessage($status, 'Não foi possível redefinir a senha com os dados informados.'),
+        };
     }
 }

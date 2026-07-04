@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { ArrowLeft, KeyRound, Trophy } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
+import { getRequestErrorMessage } from '../../../api/errors';
 import { portalService } from '../services/portal-service';
 
 const CODE_SIZE = 8;
@@ -69,13 +70,13 @@ export function JoinLeaguePage() {
       setPreview(payload);
 
       if (payload.meta?.already_member) {
-        toast.info('Você já faz parte dessa liga.');
+        toast.info('VocÃª jÃ¡ faz parte dessa liga.');
       } else {
         toast.success('Liga encontrada.');
       }
     } catch (requestError) {
       setPreview(null);
-      setError(requestError.message || 'Não encontramos uma liga disponível com esse código. Confira os caracteres e tente novamente.');
+      setError(requestError.message || 'NÃ£o encontramos uma liga disponÃ­vel com esse cÃ³digo. Confira os caracteres e tente novamente.');
     } finally {
       setIsPreviewing(false);
     }
@@ -87,10 +88,10 @@ export function JoinLeaguePage() {
 
     try {
       const payload = await portalService.joinByCode(normalizedCode);
-      toast.success('Você entrou para a torcida!');
+      toast.success('VocÃª entrou para a torcida!');
       navigate(`/ligas/${payload.data.league.id}`);
     } catch (requestError) {
-      setError(requestError.message || 'Não foi possível confirmar sua entrada nessa liga.');
+      setError(requestError.message || 'NÃ£o foi possÃ­vel confirmar sua entrada nessa liga.');
     } finally {
       setIsJoining(false);
     }
@@ -108,9 +109,9 @@ export function JoinLeaguePage() {
           <div className="join-code-header">
             <KeyRound size={22} />
             <div>
-              <p className="eyebrow">Entrada rápida</p>
+              <p className="eyebrow">Entrada rÃ¡pida</p>
               <h3>Entre na torcida da sua liga</h3>
-              <span>Digite o código de 8 caracteres enviado pelo gestor.</span>
+              <span>Digite o cÃ³digo de 8 caracteres enviado pelo gestor.</span>
             </div>
           </div>
 
@@ -120,7 +121,7 @@ export function JoinLeaguePage() {
           </Link>
 
           <label className="supporters-code-entry" onClick={focusCodeInput}>
-            <span className="sr-only">Código da liga</span>
+            <span className="sr-only">CÃ³digo da liga</span>
             <input
               ref={inputRef}
               className="supporters-code-input"
@@ -156,7 +157,7 @@ export function JoinLeaguePage() {
           </label>
 
           <p id="invite-code-help" className="join-code-help">
-            Você pode digitar ou colar o código completo. Espaços e hifens são removidos automaticamente.
+            VocÃª pode digitar ou colar o cÃ³digo completo. EspaÃ§os e hifens sÃ£o removidos automaticamente.
           </p>
 
           {isPreviewing && (
@@ -173,7 +174,7 @@ export function JoinLeaguePage() {
           </button>
 
           <Link className="join-league-secondary" to="/ligas/publicas">
-            Não tenho um código
+            NÃ£o tenho um cÃ³digo
           </Link>
 
           {previewLeague ? (
@@ -214,7 +215,7 @@ export function JoinLeaguePage() {
 
               {alreadyMember ? (
                 <>
-                  <div className="content-error compact neutral">Você já faz parte dessa liga.</div>
+                  <div className="content-error compact neutral">VocÃª jÃ¡ faz parte dessa liga.</div>
                   <button type="button" className="primary-action" onClick={() => navigate(`/ligas/${previewLeague.id}`)}>
                     Acessar liga
                   </button>
@@ -231,3 +232,6 @@ export function JoinLeaguePage() {
     </section>
   );
 }
+
+
+

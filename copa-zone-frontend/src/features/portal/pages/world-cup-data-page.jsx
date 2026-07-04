@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { getEcho, leaveChannel } from '../../../realtime/echo';
 import { MatchList } from '../components/match-list';
 import { MatchPeriodFilter } from '../components/match-period-filter';
@@ -6,7 +6,7 @@ import { WorldCupBracketView, WorldCupGroupPanel, WorldCupStatsPanel } from '../
 import { portalService } from '../services/portal-service';
 
 const tabs = [
-  { id: 'summary', label: 'Estatísticas' },
+  { id: 'summary', label: 'EstatÃ­sticas' },
   { id: 'groups', label: 'Fases' },
   { id: 'bracket', label: 'Chaveamento' },
   { id: 'matches', label: 'Partidas' },
@@ -57,7 +57,7 @@ export function WorldCupDataPage() {
         })
         .catch((requestError) => {
           if (isMounted) {
-            setError(requestError.message || 'Não foi possível carregar os dados da Copa.');
+            setError(requestError.message || 'NÃ£o foi possÃ­vel carregar os dados da Copa.');
           }
         })
         .finally(() => {
@@ -103,7 +103,7 @@ export function WorldCupDataPage() {
         })
         .catch((requestError) => {
           if (isMounted) {
-            setError(requestError.message || 'Não foi possível carregar as partidas da Copa.');
+            setError(requestError.message || 'NÃ£o foi possÃ­vel carregar as partidas da Copa.');
           }
         })
         .finally(() => {
@@ -154,7 +154,7 @@ export function WorldCupDataPage() {
         <div className="section-header">
           <div>
             <p className="eyebrow">Copa do Mundo 2026</p>
-            <h2>{edition ? `${edition.name} ${edition.season}` : 'Dados ainda não atualizados'}</h2>
+            <h2>{edition ? `${edition.name} ${edition.season}` : 'Dados ainda nÃ£o atualizados'}</h2>
           </div>
           <span className="diagnostic-pill">{meta.groups_count ?? 0} grupos/fases</span>
         </div>
@@ -183,7 +183,7 @@ export function WorldCupDataPage() {
                 </button>
               ))}
             </div>
-            {selectedGroup ? <WorldCupGroupPanel group={selectedGroup} /> : <section className="empty-state">Nenhum grupo disponível ainda.</section>}
+            {selectedGroup ? <WorldCupGroupPanel group={selectedGroup} /> : <section className="empty-state">Nenhum grupo disponÃ­vel ainda.</section>}
           </div>
         )}
 
@@ -207,3 +207,5 @@ export function WorldCupDataPage() {
     </section>
   );
 }
+
+

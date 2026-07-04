@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { KeyRound, LogOut, Trophy, UserPlus, Users } from 'lucide-react';
 import { toast } from 'sonner';
+import { getRequestErrorMessage } from '../../../api/errors';
 import { MatchList } from '../components/match-list';
 import { MatchPeriodFilter } from '../components/match-period-filter';
 import { LeagueCard } from '../components/league-card';
@@ -25,7 +26,7 @@ export function LeagueDetailPage() {
       .then((leaguePayload) => {
         setLeague(leaguePayload.data.league);
       })
-      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar a liga.'))
+      .catch((requestError) => setError(requestError.message || 'NÃ£o foi possÃ­vel carregar a liga.'))
       .finally(() => setIsLoading(false));
   }, [leagueId]);
 
@@ -36,7 +37,7 @@ export function LeagueDetailPage() {
         setMatches(matchesPayload.data.matches ?? []);
         setMatchesTotal(matchesPayload.meta?.total ?? 0);
       })
-      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar as partidas da liga.'))
+      .catch((requestError) => setError(requestError.message || 'NÃ£o foi possÃ­vel carregar as partidas da liga.'))
       .finally(() => setIsLoadingMatches(false));
   }, [leagueId, period]);
 
@@ -49,7 +50,7 @@ export function LeagueDetailPage() {
       setLeague(payload.data.league);
       toast.success('Entrada realizada com sucesso.');
     } catch (requestError) {
-      setError(requestError.message || 'Não foi possível entrar nesta liga.');
+      setError(requestError.message || 'NÃ£o foi possÃ­vel entrar nesta liga.');
     } finally {
       setIsJoining(false);
     }
@@ -62,10 +63,10 @@ export function LeagueDetailPage() {
     try {
       const payload = await portalService.leaveLeague(leagueId);
       setLeague(payload.data.league);
-      toast.success('Você saiu da liga.');
+      toast.success('VocÃª saiu da liga.');
       navigate('/ligas/publicas');
     } catch (requestError) {
-      setError(requestError.message || 'Não foi possível sair desta liga.');
+      setError(requestError.message || 'NÃ£o foi possÃ­vel sair desta liga.');
     } finally {
       setIsLeaving(false);
     }
@@ -117,7 +118,7 @@ export function LeagueDetailPage() {
         {league.invite_code && (
           <article>
             <KeyRound size={22} />
-            <span>Código privado</span>
+            <span>CÃ³digo privado</span>
             <strong>{league.invite_code}</strong>
           </article>
         )}
@@ -132,7 +133,7 @@ export function LeagueDetailPage() {
         <div className="section-header">
           <div>
             <p className="eyebrow">Partidas da Copa</p>
-            <h2>Calendário da Copa</h2>
+            <h2>CalendÃ¡rio da Copa</h2>
           </div>
           <span className="diagnostic-pill">Palpites em breve</span>
         </div>
@@ -142,10 +143,15 @@ export function LeagueDetailPage() {
       </div>
 
       <div className="empty-state compact">
-        <h2>Próxima etapa da liga</h2>
-        <p>Em breve você poderá acompanhar todos os palpites diretamente pela página da Copa.</p>
+        <h2>PrÃ³xima etapa da liga</h2>
+        <p>Em breve vocÃª poderÃ¡ acompanhar todos os palpites diretamente pela pÃ¡gina da Copa.</p>
         <Link to="/ligas/minhas">Voltar para minhas ligas</Link>
       </div>
     </section>
   );
 }
+
+
+
+
+

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { AlertCircle, ArrowLeft, CheckCircle2, Eye, EyeOff, Scissors, ShieldCheck, Ticket } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
+import { applyServerFieldErrors, getRequestErrorMessage } from '../../../api/errors';
 import { authService } from '../services/auth-service';
 
 function FieldError({ message }) {
@@ -101,18 +102,8 @@ export function LoginPage({ onAuthenticated }) {
       toast.success('Login realizado com sucesso!');
       navigate(redirectTarget, { replace: true });
     } catch (error) {
-      const serverErrors = error.payload?.errors ?? {};
-
-      Object.entries(serverErrors).forEach(([field, messages]) => {
-        if (['email', 'password'].includes(field)) {
-          setError(field, {
-            type: 'server',
-            message: messages[0],
-          });
-        }
-      });
-
-      setErrorMsg(error.message || 'Não foi possível entrar com os dados informados.');
+      applyServerFieldErrors(error.payload?.errors, setError, ['email', 'password']);
+      setErrorMsg(getRequestErrorMessage(error, { fallbackMessage: 'Não foi possível entrar com os dados informados.' }));
     } finally {
       setIsLoading(false);
     }
@@ -258,4 +249,3 @@ export function LoginPage({ onAuthenticated }) {
     </div>
   );
 }
-

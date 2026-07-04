@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { AlertCircle, ArrowLeft, ArrowRight, Eye, EyeOff, Trophy, UserPlus, Users } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
+import { applyServerFieldErrors, getRequestErrorMessage } from '../../../api/errors';
 import { AuthStepsSidebar } from '../components/auth-steps-sidebar';
 import { authService } from '../services/auth-service';
 
@@ -71,18 +72,8 @@ export function RegisterPage({ onAuthenticated }) {
       toast.success('Cadastro realizado com sucesso!');
       navigate('/dashboard', { replace: true });
     } catch (error) {
-      const serverErrors = error.payload?.errors ?? {};
-
-      Object.entries(serverErrors).forEach(([field, messages]) => {
-        if (['name', 'email', 'password', 'password_confirmation'].includes(field)) {
-          setError(field, {
-            type: 'server',
-            message: messages[0],
-          });
-        }
-      });
-
-      setFormError(error.message || 'Revise os campos destacados para concluir sua inscrição.');
+      applyServerFieldErrors(error.payload?.errors, setError, ['name', 'email', 'password', 'password_confirmation']);
+      setFormError(getRequestErrorMessage(error, { fallbackMessage: 'Revise os campos destacados para concluir sua inscrição.' }));
       toast.error('Revise os dados da inscrição.');
     } finally {
       setIsLoading(false);
@@ -258,4 +249,3 @@ export function RegisterPage({ onAuthenticated }) {
     </div>
   );
 }
-

@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { CalendarDays, ChevronLeft, ClipboardList, Radio, ShieldCheck, Trophy, Users } from 'lucide-react';
 import { toast } from 'sonner';
+import { getRequestErrorMessage } from '../../../api/errors';
 import { getEcho, leaveChannel } from '../../../realtime/echo';
 import { teamLabel, WorldCupBracketView, WorldCupGroupPanel, WorldCupStatsPanel } from '../components/world-cup-structure';
 import { portalService } from '../services/portal-service';
@@ -9,7 +10,7 @@ import { portalService } from '../services/portal-service';
 const tabs = [
   { id: 'groups', label: 'Fase de grupos' },
   { id: 'bracket', label: 'Chaveamento' },
-  { id: 'stats', label: 'Estatísticas' },
+  { id: 'stats', label: 'EstatÃ­sticas' },
   { id: 'predictions', label: 'Meus palpites' },
   { id: 'ranking', label: 'Ranking' },
   { id: 'rules', label: 'Regras' },
@@ -96,7 +97,7 @@ export function LeagueWorldCupPage() {
         loadRanking(),
       ]);
     } catch (requestError) {
-      setError(requestError.message || 'Não foi possível carregar a liga da Copa.');
+      setError(requestError.message || 'NÃ£o foi possÃ­vel carregar a liga da Copa.');
     } finally {
       setIsLoading(false);
       setIsRefreshingStructure(false);
@@ -217,7 +218,7 @@ export function LeagueWorldCupPage() {
       });
       toast.success('Palpite salvo com sucesso.');
     } catch (requestError) {
-      toast.error(requestError.message || 'Não foi possível salvar o palpite.');
+      toast.error(requestError.message || 'NÃ£o foi possÃ­vel salvar o palpite.');
     }
   }
 
@@ -226,7 +227,7 @@ export function LeagueWorldCupPage() {
       await loadRanking();
       toast.success('Ranking atualizado.');
     } catch (requestError) {
-      toast.error(requestError.message || 'Não foi possível atualizar o ranking.');
+      toast.error(requestError.message || 'NÃ£o foi possÃ­vel atualizar o ranking.');
     }
   }
 
@@ -250,14 +251,14 @@ export function LeagueWorldCupPage() {
           <div>
             <p className="eyebrow">Copa do Mundo 2026</p>
             <h2>{league?.name}</h2>
-            <p>Acompanhe grupos, chaveamento e faça seus palpites em cada confronto.</p>
+            <p>Acompanhe grupos, chaveamento e faÃ§a seus palpites em cada confronto.</p>
           </div>
         </div>
         <div className="league-copa-stats">
-          <article><Trophy size={20} /><span>Competição</span><strong>{overview?.data?.edition ? `${overview.data.edition.name} ${overview.data.edition.season}` : 'Copa 2026'}</strong></article>
+          <article><Trophy size={20} /><span>CompetiÃ§Ã£o</span><strong>{overview?.data?.edition ? `${overview.data.edition.name} ${overview.data.edition.season}` : 'Copa 2026'}</strong></article>
           <article><CalendarDays size={20} /><span>Partidas</span><strong>{meta.matches_count ?? 0}</strong></article>
           <article><Users size={20} /><span>Participantes</span><strong>{league?.members_count ?? 0}/{league?.max_members}</strong></article>
-          <article><Radio size={20} /><span>Atualização</span><strong>{socketConnected === false ? 'Ao vivo desconectado' : 'Ao vivo'}</strong></article>
+          <article><Radio size={20} /><span>AtualizaÃ§Ã£o</span><strong>{socketConnected === false ? 'Ao vivo desconectado' : 'Ao vivo'}</strong></article>
         </div>
       </div>
 
@@ -294,7 +295,7 @@ export function LeagueWorldCupPage() {
                 allowPredictions
               />
             ) : (
-              <section className="empty-state">Nenhum grupo disponível ainda.</section>
+              <section className="empty-state">Nenhum grupo disponÃ­vel ainda.</section>
             )}
           </div>
         </div>
@@ -320,7 +321,7 @@ export function LeagueWorldCupPage() {
 
       {activeTab === 'stats' && (
         <div className="content-section copa-phase-section">
-          <div className="section-header"><div><p className="eyebrow">Números</p><h2>Estatísticas da Copa</h2></div></div>
+          <div className="section-header"><div><p className="eyebrow">NÃºmeros</p><h2>EstatÃ­sticas da Copa</h2></div></div>
           <WorldCupStatsPanel groups={groups} bracketStages={bracketStages} />
         </div>
       )}
@@ -347,7 +348,7 @@ export function LeagueWorldCupPage() {
       {activeTab === 'ranking' && (
         <div className="content-section">
           <div className="section-header">
-            <div><p className="eyebrow">Classificação</p><h2>Ranking por pontos</h2></div>
+            <div><p className="eyebrow">ClassificaÃ§Ã£o</p><h2>Ranking por pontos</h2></div>
             <button type="button" className="text-action" onClick={refreshRanking}>Atualizar</button>
           </div>
           <div className="ranking-table">
@@ -368,10 +369,14 @@ export function LeagueWorldCupPage() {
           <article><ShieldCheck size={20} /><span>Placar exato</span><strong>{league?.settings?.points_exact_score ?? 5} pts</strong></article>
           <article><ShieldCheck size={20} /><span>Saldo de gols correto</span><strong>{league?.settings?.points_correct_goal_difference ?? 3} pts</strong></article>
           <article><ShieldCheck size={20} /><span>Resultado correto</span><strong>{league?.settings?.points_correct_outcome_scoreline ?? 2} pts</strong></article>
-          <article className="rules-panel-note"><ShieldCheck size={20} /><span>No mata-mata, empate exige escolher o classificado. Pênaltis decidem o vencedor, mas não alteram o placar.</span></article>
+          <article className="rules-panel-note"><ShieldCheck size={20} /><span>No mata-mata, empate exige escolher o classificado. PÃªnaltis decidem o vencedor, mas nÃ£o alteram o placar.</span></article>
           <Link to={`/ligas/${leagueId}`}>Voltar para a liga</Link>
         </div>
       )}
     </section>
   );
 }
+
+
+
+

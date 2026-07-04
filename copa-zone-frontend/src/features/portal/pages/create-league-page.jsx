@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react';
+﻿import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { ArrowLeft, CheckCircle2, Globe2, LockKeyhole, Minus, Plus, Users } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
+import { getRequestErrorMessage } from '../../../api/errors';
 import { portalService } from '../services/portal-service';
 
 const MIN_MEMBERS = 2;
@@ -21,14 +22,14 @@ const creationPhases = [
     id: 'name',
     eyebrow: 'Faixa principal',
     title: 'Escolha o nome da liga',
-    copy: 'Esse será o nome que todos os participantes vão reconhecer.',
+    copy: 'Esse serÃ¡ o nome que todos os participantes vÃ£o reconhecer.',
     artClass: 'name',
   },
   {
     id: 'visibility',
-    eyebrow: 'Portões do estádio',
+    eyebrow: 'PortÃµes do estÃ¡dio',
     title: 'Defina como a torcida entra',
-    copy: 'Escolha se a liga aparece publicamente ou se a entrada será por convite.',
+    copy: 'Escolha se a liga aparece publicamente ou se a entrada serÃ¡ por convite.',
     artClass: 'visibility',
   },
   {
@@ -62,7 +63,7 @@ function clampCapacity(value) {
 }
 
 function visibilityLabel(visibility) {
-  return visibility === 'private' ? 'Entrada com convite' : 'Portões abertos';
+  return visibility === 'private' ? 'Entrada com convite' : 'PortÃµes abertos';
 }
 
 export function CreateLeaguePage() {
@@ -110,11 +111,11 @@ export function CreateLeaguePage() {
     }
 
     if ((phaseId === 'name' || phaseId === 'confirm') && normalizedName.length > NAME_MAX) {
-      nextErrors.name = `O nome deve ter no máximo ${NAME_MAX} caracteres.`;
+      nextErrors.name = `O nome deve ter no mÃ¡ximo ${NAME_MAX} caracteres.`;
     }
 
     if ((phaseId === 'visibility' || phaseId === 'confirm') && !['public', 'private'].includes(form.visibility)) {
-      nextErrors.visibility = 'Escolha se a liga será pública ou privada.';
+      nextErrors.visibility = 'Escolha se a liga serÃ¡ pÃºblica ou privada.';
     }
 
     if ((phaseId === 'capacity' || phaseId === 'confirm') && (form.max_members < MIN_MEMBERS || form.max_members > MAX_MEMBERS)) {
@@ -176,10 +177,10 @@ export function CreateLeaguePage() {
 
       setCreatedLeague(league);
       setForm(initialLeagueForm);
-      toast.success('Sua liga está pronta!');
+      toast.success('Sua liga estÃ¡ pronta!');
       navigate(`/ligas/${league.id}/copa`);
     } catch (requestError) {
-      setError(requestError.message || 'Não foi possível criar a liga.');
+      setError(requestError.message || 'NÃ£o foi possÃ­vel criar a liga.');
     } finally {
       setIsCreating(false);
     }
@@ -220,7 +221,7 @@ export function CreateLeaguePage() {
               required
             />
             <span className="marquee-count">{normalizeLeagueName(form.name).length}/{NAME_MAX}</span>
-            <p id="league-name-help" className="field-help">Esse nome aparecerá para todos os participantes.</p>
+            <p id="league-name-help" className="field-help">Esse nome aparecerÃ¡ para todos os participantes.</p>
             {fieldErrors.name && <p id="league-name-error" className="field-error">{fieldErrors.name}</p>}
           </div>
         </div>
@@ -251,7 +252,7 @@ export function CreateLeaguePage() {
               )}
               <span className="gate-choice-copy">
                 <Globe2 size={20} />
-                <strong>Portões abertos</strong>
+                <strong>PortÃµes abertos</strong>
                 <span className="gate-choice-desc">Qualquer torcedor pode encontrar e entrar na liga livremente.</span>
               </span>
             </label>
@@ -275,7 +276,7 @@ export function CreateLeaguePage() {
               <span className="gate-choice-copy">
                 <LockKeyhole size={20} />
                 <strong>Entrada com convite</strong>
-                <span className="gate-choice-desc">Somente quem receber o código de convite poderá participar.</span>
+                <span className="gate-choice-desc">Somente quem receber o cÃ³digo de convite poderÃ¡ participar.</span>
               </span>
             </label>
             {fieldErrors.visibility && <p className="field-error">{fieldErrors.visibility}</p>}
@@ -346,7 +347,7 @@ export function CreateLeaguePage() {
             </article>
             <article>
               <span>Visibilidade</span>
-              <strong>{form.visibility === 'private' ? 'Privada' : 'Pública'}</strong>
+              <strong>{form.visibility === 'private' ? 'Privada' : 'PÃºblica'}</strong>
             </article>
             <article>
               <span>Limite</span>
@@ -367,7 +368,7 @@ export function CreateLeaguePage() {
                 <h3>{createdLeague.name} foi criada com sucesso.</h3>
                 {createdLeague.invite_code && (
                   <div className="created-league-code compact">
-                    <span>Código privado</span>
+                    <span>CÃ³digo privado</span>
                     <strong>{createdLeague.invite_code}</strong>
                   </div>
                 )}
@@ -407,7 +408,7 @@ export function CreateLeaguePage() {
       </motion.div>
 
       <form className="dynamic-create-shell" onSubmit={handleSubmit} autoComplete="off" noValidate>
-        <nav className="creation-phase-tabs" aria-label="Fases da criação">
+        <nav className="creation-phase-tabs" aria-label="Fases da criaÃ§Ã£o">
           {creationPhases.map((phase, index) => (
             <button
               key={phase.id}
@@ -452,12 +453,14 @@ export function CreateLeaguePage() {
         <Users size={20} />
         <div>
           <strong>Quer entrar em uma liga?</strong>
-          <span>Use a tela de código quando receber um convite privado.</span>
+          <span>Use a tela de cÃ³digo quando receber um convite privado.</span>
         </div>
         <Link className="secondary-action action-link" to="/ligas/entrar">
-          Colar código
+          Colar cÃ³digo
         </Link>
       </div>
     </section>
   );
 }
+
+
