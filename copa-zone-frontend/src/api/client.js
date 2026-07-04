@@ -1,3 +1,5 @@
+import { DEFAULT_REQUEST_ERROR_MESSAGE, getRequestErrorMessage } from './errors';
+
 function getDefaultApiBaseUrl() {
   if (typeof window === 'undefined') {
     return '/api/v1';
@@ -76,12 +78,10 @@ async function sendRequest(path, options = {}) {
   const payload = await response.json().catch(() => null);
 
   if (!response.ok) {
-    const error = new Error(
-      payload?.message
-        || payload?.error?.message
-        || Object.values(payload?.errors || {})?.[0]?.[0]
-        || 'Não foi possível concluir a operação.'
-    );
+    const error = new Error(getRequestErrorMessage(
+      { payload },
+      { fallbackMessage: DEFAULT_REQUEST_ERROR_MESSAGE },
+    ));
 
     error.status = response.status;
     error.payload = payload;

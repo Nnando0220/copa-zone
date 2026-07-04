@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { getRequestErrorMessage } from '../../../api/errors';
 import { EmptyState } from '../components/empty-state';
 import { LeagueCard } from '../components/league-card';
 import { portalService } from '../services/portal-service';
@@ -14,12 +15,12 @@ export function PublicLeaguesPage() {
     portalService
       .publicLeagues()
       .then((payload) => setLeagues(payload.data ?? []))
-      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar ligas públicas.'))
+      .catch((requestError) => setError(requestError.message || 'NÃ£o foi possÃ­vel carregar ligas pÃºblicas.'))
       .finally(() => setIsLoading(false));
   }, []);
 
   if (isLoading) {
-    return <section className="content-loading">Carregando ligas públicas...</section>;
+    return <section className="content-loading">Carregando ligas pÃºblicas...</section>;
   }
 
   if (error) {
@@ -30,8 +31,8 @@ export function PublicLeaguesPage() {
     <section className="content-section">
       {leagues.length === 0 ? (
         <EmptyState
-          title="Nenhuma liga pública aberta"
-          description="Quando novas ligas públicas estiverem disponíveis, elas aparecerão aqui para você explorar."
+          title="Nenhuma liga pÃºblica aberta"
+          description="Quando novas ligas pÃºblicas estiverem disponÃ­veis, elas aparecerÃ£o aqui para vocÃª explorar."
         />
       ) : (
         <div className="league-grid">
@@ -48,3 +49,5 @@ export function PublicLeaguesPage() {
     </section>
   );
 }
+
+

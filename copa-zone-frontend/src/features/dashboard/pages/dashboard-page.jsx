@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Activity, Globe2, LockKeyhole, Users } from 'lucide-react';
+import { getRequestErrorMessage } from '../../../api/errors';
 import { EmptyState } from '../../portal/components/empty-state';
 import { LeagueCard } from '../../portal/components/league-card';
 import { portalService } from '../../portal/services/portal-service';
@@ -15,7 +16,7 @@ export function DashboardPage() {
     portalService
       .dashboard()
       .then((payload) => setDashboard(payload.data))
-      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar o painel.'))
+      .catch((requestError) => setError(requestError.message || 'NÃ£o foi possÃ­vel carregar o painel.'))
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -47,7 +48,7 @@ export function DashboardPage() {
         </article>
         <article>
           <Globe2 size={21} />
-          <span>Públicas abertas</span>
+          <span>PÃºblicas abertas</span>
           <strong>{summary.public_leagues_available_count ?? 0}</strong>
         </article>
       </section>
@@ -75,7 +76,7 @@ export function DashboardPage() {
         <div className="section-header">
           <div>
             <p className="eyebrow">Minhas ligas</p>
-            <h2>Ligas onde você participa</h2>
+            <h2>Ligas onde vocÃª participa</h2>
           </div>
           <Link to="/ligas/minhas">Ver todas</Link>
         </div>
@@ -101,3 +102,5 @@ export function DashboardPage() {
     </div>
   );
 }
+
+

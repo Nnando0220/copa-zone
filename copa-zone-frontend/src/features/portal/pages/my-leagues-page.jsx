@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { getRequestErrorMessage } from '../../../api/errors';
 import { EmptyState } from '../components/empty-state';
 import { LeagueCard } from '../components/league-card';
 import { portalService } from '../services/portal-service';
@@ -14,7 +15,7 @@ export function MyLeaguesPage() {
     portalService
       .myLeagues()
       .then((payload) => setLeagues(payload.data ?? []))
-      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar suas ligas.'))
+      .catch((requestError) => setError(requestError.message || 'NÃ£o foi possÃ­vel carregar suas ligas.'))
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -30,8 +31,8 @@ export function MyLeaguesPage() {
     <section className="content-section">
       {leagues.length === 0 ? (
         <EmptyState
-          title="Você ainda não está inscrito em ligas"
-          description="Crie sua primeira liga e convide seus amigos para o bolão."
+          title="VocÃª ainda nÃ£o estÃ¡ inscrito em ligas"
+          description="Crie sua primeira liga e convide seus amigos para o bolÃ£o."
           action={<Link to="/ligas/criar">Criar liga</Link>}
         />
       ) : (
@@ -48,3 +49,5 @@ export function MyLeaguesPage() {
     </section>
   );
 }
+
+

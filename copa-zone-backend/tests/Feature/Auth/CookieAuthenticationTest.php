@@ -57,6 +57,21 @@ class CookieAuthenticationTest extends TestCase
             ->assertJsonPath('data.user.email', 'user@example.com');
     }
 
+    public function test_invalid_login_returns_human_readable_error_message(): void
+    {
+        User::factory()->create([
+            'email' => 'wrong@example.com',
+            'password' => Hash::make('senha123'),
+        ]);
+
+        $this->postJsonWithCsrf('/api/v1/auth/login', [
+            'email' => 'wrong@example.com',
+            'password' => 'senha-errada',
+        ])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.email.0', 'E-mail ou senha incorretos.');
+    }
+
     public function test_current_profile_requires_authentication(): void
     {
         $this->getJson('/api/v1/me')
