@@ -58,18 +58,6 @@ class SyncWorldCupDataAction
         ])->save();
 
         try {
-            $providerChangedAt = null;
-
-            if (! $force && $providerChangedAt && $state->last_changed_at && $providerChangedAt->lessThanOrEqualTo($state->last_changed_at)) {
-                $state->forceFill([
-                    'status' => 'skipped',
-                    'last_finished_at' => now(),
-                    'next_attempt_at' => now()->addMinutes(10),
-                ])->save();
-
-                return $this->fallbackResult('skipped');
-            }
-
             $leaguePayload = $matchesOnly ? [] : $this->client->availableLeagues($season, $priority);
             $teamsPayload = $matchesOnly ? [] : $this->client->teams($shortcut, $season, $priority);
             $groupsPayload = $matchesOnly ? [] : $this->client->groups($shortcut, $season, $priority);
@@ -85,12 +73,13 @@ class SyncWorldCupDataAction
             return $this->fallbackResult('failed');
         }
 
-        return DB::transaction(function () use ($shortcut, $season, $leaguePayload, $teamsPayload, $groupsPayload, $matchesPayload, $state, $providerChangedAt, $matchesOnly): array {
+        return DB::transaction(function () use ($shortcut, $season, $leaguePayload, $teamsPayload, $groupsPayload, $matchesPayload, $state, $matchesOnly): array {
             $edition = $this->upsertEdition($shortcut, $season, $leaguePayload, $matchesPayload, $matchesOnly);
             $teams = $this->upsertTeams($teamsPayload, $matchesPayload);
             $groups = $this->upsertGroups($edition, $groupsPayload, $matchesPayload);
             $matchesCount = $this->upsertMatches($edition, $matchesPayload, $teams, $groups);
             $this->removeObsoleteGroups($edition);
+            $payloadChangedAt = $this->payloadChangedAt($matchesPayload);
 
             $edition->forceFill([
                 'status' => 'synced',
@@ -100,7 +89,7 @@ class SyncWorldCupDataAction
             $state->forceFill([
                 'status' => 'synced',
                 'last_finished_at' => now(),
-                'last_changed_at' => $providerChangedAt ?? now(),
+                'last_changed_at' => $payloadChangedAt ?? now(),
                 'next_attempt_at' => now()->addMinutes(10),
                 'last_error' => null,
             ])->save();
@@ -128,16 +117,30 @@ class SyncWorldCupDataAction
         );
     }
 
-    private function providerChangedAt(string $shortcut, int $season, string $priority): ?CarbonImmutable
+    /**
+     * @param array<int, array<string, mixed>> $matchesPayload
+     */
+    private function payloadChangedAt(array $matchesPayload): ?CarbonImmutable
     {
-        try {
-            $payload = $this->client->lastChangeDate($shortcut, $season, $priority);
-            $value = data_get($payload, 'last_changed_at') ?? data_get($payload, 'lastChangeDate') ?? data_get($payload, 'lastChangedAt');
+        return collect($matchesPayload)
+            ->map(function (array $match): ?CarbonImmutable {
+                $value = data_get($match, 'lastUpdateDateTime')
+                    ?? data_get($match, 'lastUpdateDateTimeUtc')
+                    ?? data_get($match, 'lastChangedAt');
 
-            return is_string($value) && $value !== '' ? CarbonImmutable::parse($value) : null;
-        } catch (Throwable) {
-            return null;
-        }
+                if (! is_string($value) || trim($value) === '') {
+                    return null;
+                }
+
+                try {
+                    return CarbonImmutable::parse($value, (string) config('services.openligadb.source_timezone', 'Europe/Berlin'))->utc();
+                } catch (Throwable) {
+                    return null;
+                }
+            })
+            ->filter()
+            ->sort()
+            ->last();
     }
 
     /**
@@ -308,7 +311,8 @@ class SyncWorldCupDataAction
             $homeProviderId = (string) data_get($item, 'team1.teamId');
             $awayProviderId = (string) data_get($item, 'team2.teamId');
             $round = trim((string) data_get($item, 'group.groupName'));
-            $finalResult = $this->finalResult($item);
+            $regulationResult = $this->regulationResult($item);
+            $finalResult = $this->finalResult($item, $regulationResult);
             $penaltyResult = $this->penaltyResult($item, $finalResult);
             $decidingResult = $this->decidingResult($item, $finalResult, $penaltyResult);
             $isFinished = data_get($item, 'matchIsFinished') === true;
@@ -336,7 +340,7 @@ class SyncWorldCupDataAction
                     'away_score' => $isFinished ? data_get($finalResult, 'pointsTeam2') : null,
                     'home_penalty_score' => $isFinished ? data_get($penaltyResult, 'pointsTeam1') : null,
                     'away_penalty_score' => $isFinished ? data_get($penaltyResult, 'pointsTeam2') : null,
-                    'winner_source' => $isFinished ? $this->winnerSource($finalResult, $decidingResult, $penaltyResult) : null,
+                    'winner_source' => $isFinished ? $this->winnerSource($item, $regulationResult, $finalResult, $decidingResult, $penaltyResult) : null,
                 ],
             );
 
@@ -443,7 +447,30 @@ class SyncWorldCupDataAction
      * @param array<string, mixed> $match
      * @return array<string, mixed>|null
      */
-    private function finalResult(array $match): ?array
+    private function regulationResult(array $match): ?array
+    {
+        $results = $this->matchResults($match);
+        $nonPenaltyResults = $results->reject(fn (array $result): bool => $this->isPenaltyResult($result));
+        $finalResults = $nonPenaltyResults
+            ->filter(fn (array $result): bool => (int) data_get($result, 'resultTypeID') === 2);
+
+        return $finalResults
+            ->sortBy(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
+            ->first()
+            ?? $nonPenaltyResults
+                ->sortByDesc(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
+                ->first()
+            ?? $results
+                ->sortByDesc(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
+                ->first();
+    }
+
+    /**
+     * @param array<string, mixed> $match
+     * @param array<string, mixed>|null $regulationResult
+     * @return array<string, mixed>|null
+     */
+    private function finalResult(array $match, ?array $regulationResult): ?array
     {
         $results = $this->matchResults($match);
         $nonPenaltyResults = $results->reject(fn (array $result): bool => $this->isPenaltyResult($result));
@@ -454,16 +481,26 @@ class SyncWorldCupDataAction
             ->sortByDesc(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
             ->first();
 
-        return $extraTimeResult
-            ?? $finalResults
-                ->sortBy(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
-                ->first()
+        $resolvedFinalResult = $extraTimeResult
+            ?? $regulationResult
             ?? $nonPenaltyResults
                 ->sortByDesc(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
                 ->first()
             ?? $results
                 ->sortByDesc(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
                 ->first();
+
+        if (! $this->isKnockoutMatchPayload($match) || ! $this->hasEqualScores($resolvedFinalResult)) {
+            return $resolvedFinalResult;
+        }
+
+        return $nonPenaltyResults
+            ->sortByDesc(fn (array $result): int => (int) data_get($result, 'resultOrderID'))
+            ->first(function (array $result) use ($resolvedFinalResult): bool {
+                return $this->hasDifferentScores($result)
+                    && (int) data_get($result, 'resultOrderID') > (int) data_get($resolvedFinalResult, 'resultOrderID');
+            })
+            ?? $resolvedFinalResult;
     }
 
     /**
@@ -538,7 +575,7 @@ class SyncWorldCupDataAction
      * @param array<string, mixed>|null $decidingResult
      * @param array<string, mixed>|null $penaltyResult
      */
-    private function winnerSource(?array $finalResult, ?array $decidingResult, ?array $penaltyResult): ?string
+    private function winnerSource(array $match, ?array $regulationResult, ?array $finalResult, ?array $decidingResult, ?array $penaltyResult): ?string
     {
         if ($decidingResult === null) {
             return null;
@@ -549,6 +586,16 @@ class SyncWorldCupDataAction
         }
 
         if ($this->isExtraTimeResult($decidingResult)) {
+            return 'extra_time';
+        }
+
+        if (
+            $this->isKnockoutMatchPayload($match)
+            && $this->hasEqualScores($regulationResult)
+            && $finalResult !== null
+            && $this->sameResult($decidingResult, $finalResult)
+            && ! $this->sameResult($finalResult, $regulationResult)
+        ) {
             return 'extra_time';
         }
 
@@ -575,7 +622,10 @@ class SyncWorldCupDataAction
 
         return str_contains($name, 'penalt')
             || str_contains($name, 'elfmeter')
+            || str_contains($name, 'i.e')
             || str_contains($name, 'shootout')
+            || str_contains($name, 'pen.')
+            || str_contains($name, 'pens')
             || str_contains($name, 'n.e');
     }
 
@@ -588,6 +638,7 @@ class SyncWorldCupDataAction
 
         return str_contains($name, 'verlanger')
             || str_contains($name, 'extra time')
+            || str_contains($name, 'after extra')
             || str_contains($name, 'prorrog')
             || str_contains($name, 'aet')
             || str_contains($name, 'n.v');

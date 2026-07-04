@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Application\Services\WorldCupSyncWindowService;
 use App\Events\WorldCupMatchUpdated;
 use App\Models\ApiSyncLog;
 use App\Models\League;
@@ -62,6 +63,7 @@ class WorldCupDataApiTest extends TestCase
             'provider' => 'openligadb',
             'scope' => 'world_cup',
             'status' => 'synced',
+            'last_changed_at' => '2026-07-01 15:30:00',
         ]);
         $this->assertDatabaseHas('api_sync_logs', [
             'provider' => 'openligadb',
@@ -134,6 +136,7 @@ class WorldCupDataApiTest extends TestCase
             ->getJson('/api/v1/world-cup/sync-status')
             ->assertOk()
             ->assertJsonPath('data.sync.status', 'synced')
+            ->assertJsonPath('data.sync.last_changed_at', '2026-07-01T15:30:00.000000Z')
             ->assertJsonPath('data.budget.daily_limit', 1000);
     }
 
@@ -314,6 +317,72 @@ class WorldCupDataApiTest extends TestCase
             'away_penalty_score' => null,
             'winner_team_id' => null,
             'winner_source' => null,
+        ]);
+    }
+
+    public function test_world_cup_sync_treats_unlabeled_knockout_tiebreak_score_as_extra_time_not_penalties(): void
+    {
+        config()->set('services.openligadb.world_cup.shortcut', 'wm26');
+        config()->set('services.openligadb.world_cup.season', 2026);
+
+        Http::fake([
+            'https://api.openligadb.de/getmatchdata/wm26/2026' => Http::response([
+                [
+                    'matchID' => 'extra-time-unlabeled-1',
+                    'matchDateTime' => '2026-07-03T22:00:00',
+                    'timeZoneID' => 'UTC',
+                    'leagueShortcut' => 'wm26',
+                    'leagueName' => 'FIFA World Cup',
+                    'leagueSeason' => 2026,
+                    'group' => [
+                        'groupID' => 201,
+                        'groupName' => 'Achtelfinale',
+                        'groupOrderID' => 4,
+                    ],
+                    'team1' => [
+                        'teamId' => 710,
+                        'teamName' => 'Argentina',
+                        'shortName' => 'ARG',
+                    ],
+                    'team2' => [
+                        'teamId' => 711,
+                        'teamName' => 'Cape Verde',
+                        'shortName' => 'CPV',
+                    ],
+                    'matchIsFinished' => true,
+                    'matchResults' => [
+                        [
+                            'resultName' => 'Endergebnis',
+                            'resultTypeID' => 2,
+                            'resultOrderID' => 2,
+                            'pointsTeam1' => 1,
+                            'pointsTeam2' => 1,
+                        ],
+                        [
+                            'resultName' => 'Auxiliary',
+                            'resultTypeID' => 2,
+                            'resultOrderID' => 3,
+                            'pointsTeam1' => 2,
+                            'pointsTeam2' => 1,
+                        ],
+                    ],
+                ],
+            ]),
+        ]);
+
+        $this->artisan('world-cup:sync --matches-only --essential')
+            ->assertSuccessful();
+
+        $argentina = Team::query()->where('provider_team_id', '710')->firstOrFail();
+
+        $this->assertDatabaseHas('matches', [
+            'provider_fixture_id' => 'extra-time-unlabeled-1',
+            'home_score' => 2,
+            'away_score' => 1,
+            'home_penalty_score' => null,
+            'away_penalty_score' => null,
+            'winner_team_id' => $argentina->id,
+            'winner_source' => 'extra_time',
         ]);
     }
 
@@ -1056,6 +1125,36 @@ class WorldCupDataApiTest extends TestCase
         ]);
     }
 
+    public function test_recent_in_progress_match_remains_inside_extended_sync_window_after_three_hours(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-07-03 22:05:00', 'America/Sao_Paulo'));
+
+        try {
+            $edition = TournamentEdition::create([
+                'name' => 'WM 2026',
+                'season' => 2026,
+                'provider' => 'openligadb',
+                'provider_league_id' => 'wm26',
+                'status' => 'synced',
+                'last_synced_at' => now(),
+            ]);
+
+            WorldCupMatch::create([
+                'tournament_edition_id' => $edition->id,
+                'provider' => 'openligadb',
+                'provider_fixture_id' => 'scheduler-1',
+                'starts_at' => Carbon::parse('2026-07-03 19:00:00', 'America/Sao_Paulo')->utc(),
+                'status' => 'in_progress_unconfirmed',
+            ]);
+
+            $this->assertTrue(
+                app(WorldCupSyncWindowService::class)->hasMatchesNeedingSync(360, 15),
+            );
+        } finally {
+            Carbon::setTestNow();
+        }
+    }
+
     public function test_world_cup_matches_only_sync_preserves_existing_team_flag_when_payload_omits_icon(): void
     {
         config()->set('services.openligadb.world_cup.shortcut', 'wm26');
@@ -1232,6 +1331,7 @@ class WorldCupDataApiTest extends TestCase
                     'leagueShortcut' => 'wm26',
                     'leagueName' => 'FIFA World Cup',
                     'leagueSeason' => 2026,
+                    'lastUpdateDateTime' => '2026-07-01T17:30:00',
                     'group' => [
                         'groupID' => 101,
                         'groupName' => 'Group Stage - 1',
@@ -1314,6 +1414,7 @@ class WorldCupDataApiTest extends TestCase
                     'leagueShortcut' => 'wm26',
                     'leagueName' => 'FIFA World Cup',
                     'leagueSeason' => 2026,
+                    'lastUpdateDateTime' => '2026-07-01T15:30:00',
                     'group' => [
                         'groupID' => 101,
                         'groupName' => 'Group Stage - 1',
@@ -1341,6 +1442,7 @@ class WorldCupDataApiTest extends TestCase
                     'leagueShortcut' => 'wm26',
                     'leagueName' => 'FIFA World Cup',
                     'leagueSeason' => 2026,
+                    'lastUpdateDateTime' => '2026-07-01T18:30:00',
                     'group' => [
                         'groupID' => 101,
                         'groupName' => 'Group Stage - 1',
@@ -1381,6 +1483,7 @@ class WorldCupDataApiTest extends TestCase
                     'leagueShortcut' => 'wm26',
                     'leagueName' => 'FIFA World Cup',
                     'leagueSeason' => 2026,
+                    'lastUpdateDateTime' => '2026-07-01T14:15:00',
                     'group' => [
                         'groupID' => 201,
                         'groupName' => 'Achtelfinale',

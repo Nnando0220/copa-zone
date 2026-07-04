@@ -17,9 +17,101 @@ import { PublicLeaguesPage } from './features/portal/pages/public-leagues-page';
 import { WorldCupDataPage } from './features/portal/pages/world-cup-data-page';
 import './styles.css';
 
+const SITE_URL = 'https://copazone.app';
+const DEFAULT_DESCRIPTION =
+  'O CopaZone ajuda voce a criar ligas, convidar amigos e acompanhar palpites da Copa do Mundo 2026.';
+
+const publicPages = {
+  '/como-funciona': {
+    eyebrow: 'Como funciona',
+    title: 'Como funciona o CopaZone',
+    description:
+      'Entenda como criar uma liga, convidar amigos, registrar palpites e acompanhar a disputa da Copa do Mundo 2026.',
+    intro:
+      'O CopaZone organiza a disputa em um fluxo simples: voce cria ou entra em uma liga, faz seus palpites e acompanha a pontuacao com seus amigos.',
+    sections: [
+      { title: 'Crie sua liga', text: 'Monte uma liga para reunir amigos, familia ou colegas em uma disputa simples durante a Copa.' },
+      { title: 'Convide participantes', text: 'Compartilhe o acesso da liga com quem vai participar e mantenha todos no mesmo espaco.' },
+      { title: 'Acompanhe a disputa', text: 'Veja palpites, resultados e pontuacao em uma experiencia pensada para ser clara do inicio ao fim.' },
+    ],
+  },
+  '/copa-do-mundo-2026': {
+    eyebrow: 'Copa do Mundo 2026',
+    title: 'Copa do Mundo 2026 no CopaZone',
+    description:
+      'Use o CopaZone para organizar ligas de palpites da Copa do Mundo 2026 com amigos.',
+    intro:
+      'O CopaZone foi pensado para transformar os jogos da Copa do Mundo 2026 em uma disputa leve entre amigos.',
+    sections: [
+      { title: 'Jogos da Copa', text: 'Acompanhe os confrontos da competicao dentro das ligas em que voce participa.' },
+      { title: 'Palpites organizados', text: 'Registre seus palpites em um lugar unico, sem depender de planilhas ou mensagens espalhadas.' },
+      { title: 'Disputa entre amigos', text: 'Acompanhe a pontuacao da liga e veja quem esta melhor na rodada.' },
+    ],
+  },
+  '/regras': {
+    eyebrow: 'Regras',
+    title: 'Regras do bolao da CopaZone',
+    description:
+      'Conheca as regras gerais para participar de ligas, enviar palpites e acompanhar a pontuacao no CopaZone.',
+    intro:
+      'As regras ajudam a manter a disputa simples, justa e facil de acompanhar para todos os participantes.',
+    sections: [
+      { title: 'Palpites antes do jogo', text: 'Envie seus palpites dentro do prazo indicado para que todos participem em igualdade.' },
+      { title: 'Ligas com convite', text: 'Cada liga reune seus proprios participantes, mantendo a disputa no grupo certo.' },
+      { title: 'Pontuacao da liga', text: 'A classificacao mostra o desempenho dos participantes conforme os jogos acontecem.' },
+    ],
+  },
+  '/faq': {
+    eyebrow: 'FAQ',
+    title: 'Perguntas frequentes sobre a CopaZone',
+    description:
+      'Tire duvidas sobre cadastro, ligas, palpites e funcionamento geral do CopaZone.',
+    intro:
+      'Reunimos as principais duvidas para ajudar novos participantes a entenderem rapidamente como usar a CopaZone.',
+    sections: [
+      { title: 'Preciso criar conta?', text: 'Sim. O cadastro permite guardar suas ligas, seus palpites e sua pontuacao.' },
+      { title: 'Posso convidar amigos?', text: 'Sim. A ideia do CopaZone e reunir pessoas em ligas para acompanhar a Copa juntas.' },
+      { title: 'A CopaZone e oficial da FIFA?', text: 'Nao. A CopaZone e um aplicativo recreativo independente para boloes e ligas entre amigos.' },
+    ],
+  },
+};
+
+function upsertMeta(selector, createElement, attributes) {
+  let element = document.head.querySelector(selector);
+
+  if (!element) {
+    element = createElement();
+    document.head.appendChild(element);
+  }
+
+  Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+}
+
+function Seo({ title, description = DEFAULT_DESCRIPTION, path = '/', robots = 'index,follow' }) {
+  useEffect(() => {
+    const fullTitle = title ? `${title} | CopaZone` : 'CopaZone | Bolao da Copa do Mundo 2026';
+    const canonicalUrl = `${SITE_URL}${path === '/' ? '/' : path}`;
+
+    document.title = fullTitle;
+    upsertMeta('meta[name="description"]', () => document.createElement('meta'), { name: 'description', content: description });
+    upsertMeta('meta[name="robots"]', () => document.createElement('meta'), { name: 'robots', content: robots });
+    upsertMeta('link[rel="canonical"]', () => {
+      const link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      return link;
+    }, { href: canonicalUrl });
+    upsertMeta('meta[property="og:title"]', () => document.createElement('meta'), { property: 'og:title', content: fullTitle });
+    upsertMeta('meta[property="og:description"]', () => document.createElement('meta'), { property: 'og:description', content: description });
+    upsertMeta('meta[property="og:url"]', () => document.createElement('meta'), { property: 'og:url', content: canonicalUrl });
+  }, [description, path, robots, title]);
+
+  return null;
+}
+
 function GuardScreen({ title = 'Validando sessão' }) {
   return (
     <main className="auth-shell">
+      <Seo title="Validando sessao" robots="noindex,nofollow" />
       <section className="auth-panel compact">
         <p className="eyebrow">CopaZone</p>
         <h1>{title}</h1>
@@ -28,35 +120,37 @@ function GuardScreen({ title = 'Validando sessão' }) {
   );
 }
 
-function LandingPage({ user }) {
+function LandingPage() {
   return (
     <main className="landing-page">
+      <Seo
+        title="Bolao da Copa do Mundo 2026"
+        description="Crie uma liga da Copa do Mundo 2026, convide amigos e acompanhe palpites e pontuacao no CopaZone."
+        path="/"
+      />
       <section className="landing-hero">
         <div>
           <p className="eyebrow">CopaZone</p>
-          <h1>Bolao recreativo da Copa do Mundo</h1>
+          <h1>Bolao da Copa do Mundo entre amigos</h1>
           <p>
-            Entre, crie sua liga e acompanhe seus palpites com a API do backend como fonte oficial da verdade.
+            Crie sua liga, convide participantes e acompanhe palpites e pontuacao durante a Copa do Mundo.
           </p>
           <div className="landing-actions">
-            {user ? (
-              <Link to="/dashboard">Abrir painel</Link>
-            ) : (
-              <>
-                <Link to="/login">Entrar</Link>
-                <Link to="/cadastro" className="secondary">
-                  Criar conta
-                </Link>
-              </>
-            )}
+            <Link to="/login">Entrar</Link>
+            <Link to="/cadastro" className="secondary">
+              Criar conta
+            </Link>
+            <Link to="/como-funciona" className="secondary">
+              Como funciona
+            </Link>
           </div>
         </div>
 
         <div className="landing-summary">
           {[
-            { icon: ShieldCheck, title: 'Cookie HttpOnly', desc: 'Sessao segura controlada pelo backend.' },
-            { icon: Users, title: 'Ligas', desc: 'Proxima etapa do fluxo do MVP.' },
-            { icon: Trophy, title: 'Copa', desc: 'Escopo exclusivo da Copa do Mundo.' },
+            { icon: ShieldCheck, title: 'Conta protegida', desc: 'Acesse suas ligas e seus palpites com seguranca.' },
+            { icon: Users, title: 'Ligas com amigos', desc: 'Reuna seu grupo em uma disputa simples de acompanhar.' },
+            { icon: Trophy, title: 'Copa do Mundo', desc: 'Palpites e pontuacao focados nos jogos da Copa.' },
           ].map((item) => {
             const Icon = item.icon;
 
@@ -69,6 +163,54 @@ function LandingPage({ user }) {
             );
           })}
         </div>
+      </section>
+    </main>
+  );
+}
+
+function HomeRoute({ user, isBooting }) {
+  if (!isBooting && user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <LandingPage />;
+}
+
+function PublicInfoPage({ page, path }) {
+  return (
+    <main className="landing-page public-info-page">
+      <Seo title={page.title} description={page.description} path={path} />
+      <section className="public-info-shell">
+        <Link to="/" className="public-back-link">
+          CopaZone
+        </Link>
+        <div className="public-info-hero">
+          <p className="eyebrow">{page.eyebrow}</p>
+          <h1>{page.title}</h1>
+          <p>{page.intro}</p>
+          <div className="landing-actions">
+            <Link to="/cadastro">Criar conta</Link>
+            <Link to="/login" className="secondary">
+              Entrar
+            </Link>
+          </div>
+        </div>
+
+        <div className="public-info-grid">
+          {page.sections.map((section) => (
+            <article key={section.title}>
+              <strong>{section.title}</strong>
+              <span>{section.text}</span>
+            </article>
+          ))}
+        </div>
+
+        <nav className="public-info-nav" aria-label="Paginas publicas da CopaZone">
+          <Link to="/como-funciona">Como funciona</Link>
+          <Link to="/copa-do-mundo-2026">Copa 2026</Link>
+          <Link to="/regras">Regras</Link>
+          <Link to="/faq">FAQ</Link>
+        </nav>
       </section>
     </main>
   );
@@ -93,12 +235,18 @@ function RedirectWhenAuthenticated({ user, children }) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return children;
+  return (
+    <>
+      <Seo title="Acesso" robots="noindex,nofollow" />
+      {children}
+    </>
+  );
 }
 
 function ProtectedShellRoute({ user, isBooting, onLogout, isLoggingOut, title, subtitle, children }) {
   return (
     <RequireAuth user={user} isBooting={isBooting}>
+      <Seo title={title} robots="noindex,nofollow" />
       <AuthenticatedShell
         user={user}
         onLogout={onLogout}
@@ -113,10 +261,12 @@ function ProtectedShellRoute({ user, isBooting, onLogout, isLoggingOut, title, s
 }
 
 function AppRoutes() {
+  const location = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isBooting, setIsBooting] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const isPublicPath = location.pathname === '/' || Object.hasOwn(publicPages, location.pathname);
 
   useEffect(() => {
     authService
@@ -141,14 +291,17 @@ function AppRoutes() {
     }
   }
 
-  if (isBooting) {
+  if (isBooting && !isPublicPath) {
     return <GuardScreen />;
   }
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<LandingPage user={user} />} />
+        <Route path="/" element={<HomeRoute user={user} isBooting={isBooting} />} />
+        {Object.entries(publicPages).map(([path, page]) => (
+          <Route key={path} path={path} element={<PublicInfoPage page={page} path={path} />} />
+        ))}
         <Route
           path="/login"
           element={

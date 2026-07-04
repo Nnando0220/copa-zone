@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Services\WorldCupSyncWindowService;
 use Illuminate\Foundation\Inspiring;
 use App\Models\WorldCupMatch;
 use Illuminate\Support\Facades\Artisan;
@@ -9,35 +10,22 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+$hasWorldCupSyncWindow = static fn (int $pastMinutes, int $futureMinutes = 0): bool => app(WorldCupSyncWindowService::class)
+    ->hasMatchesNeedingSync($pastMinutes, $futureMinutes);
+
 Schedule::command('world-cup:sync --force')
     ->dailyAt('06:00')
-    ->when(fn (): bool => WorldCupMatch::query()->doesntExist()
-        || WorldCupMatch::query()
-            ->whereNotNull('starts_at')
-            ->where('starts_at', '>=', now()->startOfDay())
-            ->where('starts_at', '<=', now()->addHours(20))
-            ->whereNotIn('status', ['cancelled', 'postponed'])
-            ->exists())
+    ->when(fn (): bool => WorldCupMatch::query()->doesntExist() || $hasWorldCupSyncWindow(0, 20 * 60))
     ->withoutOverlapping();
 
 Schedule::command('world-cup:sync')
-    ->dailyAt('12:00')
-    ->when(fn (): bool => WorldCupMatch::query()
-        ->whereNotNull('starts_at')
-        ->where('starts_at', '>=', now()->subMinutes(150))
-        ->where('starts_at', '<=', now()->addMinutes(180))
-        ->whereNotIn('status', ['cancelled', 'postponed'])
-        ->exists())
+    ->hourly()
+    ->when(fn (): bool => $hasWorldCupSyncWindow(360, 180))
     ->withoutOverlapping();
 
 Schedule::command('world-cup:sync --essential --matches-only')
     ->everyTenMinutes()
-    ->when(fn (): bool => WorldCupMatch::query()
-        ->whereNotNull('starts_at')
-        ->where('starts_at', '>=', now()->subMinutes(150))
-        ->where('starts_at', '<=', now()->addMinutes(15))
-        ->whereNotIn('status', ['cancelled', 'postponed'])
-        ->exists())
+    ->when(fn (): bool => $hasWorldCupSyncWindow(360, 15))
     ->withoutOverlapping();
 
 Schedule::command('world-cup:score-predictions')

@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, RefreshCcw } from 'lucide-react';
 import { getEcho, leaveChannel } from '../../../realtime/echo';
-import { formatBrazilDateTime } from '../../../utils/date-format';
 import { MatchList } from '../components/match-list';
 import { MatchPeriodFilter } from '../components/match-period-filter';
 import { WorldCupBracketView, WorldCupGroupPanel, WorldCupStatsPanel } from '../components/world-cup-structure';
@@ -14,14 +12,6 @@ const tabs = [
   { id: 'matches', label: 'Partidas' },
 ];
 
-function formatSyncedAt(value) {
-  if (!value) {
-    return 'Ainda nao sincronizado';
-  }
-
-  return formatBrazilDateTime(value);
-}
-
 export function WorldCupDataPage() {
   const [diagnostic, setDiagnostic] = useState(null);
   const [groups, setGroups] = useState([]);
@@ -31,7 +21,6 @@ export function WorldCupDataPage() {
   const [activeGroupCode, setActiveGroupCode] = useState('');
   const [period, setPeriod] = useState('all');
   const [matchesTotal, setMatchesTotal] = useState(0);
-  const [syncStatus, setSyncStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMatches, setIsLoadingMatches] = useState(false);
   const [error, setError] = useState('');
@@ -50,11 +39,10 @@ export function WorldCupDataPage() {
 
       Promise.all([
         portalService.worldCup(),
-        portalService.worldCupSyncStatus(),
         portalService.worldCupGroups(),
         portalService.worldCupBracket(),
       ])
-        .then(([worldCupPayload, syncPayload, groupsPayload, bracketPayload]) => {
+        .then(([worldCupPayload, groupsPayload, bracketPayload]) => {
           if (!isMounted) {
             return;
           }
@@ -63,7 +51,6 @@ export function WorldCupDataPage() {
             edition: worldCupPayload.data.edition,
             meta: worldCupPayload.meta,
           });
-          setSyncStatus(syncPayload.data);
           setGroups(groupsPayload.data.groups ?? []);
           setBracketStages(bracketPayload.data.bracket?.stages ?? []);
           setError('');
@@ -178,23 +165,9 @@ export function WorldCupDataPage() {
             </button>
           ))}
         </nav>
-        {syncStatus?.sync && (
-          <div className="sync-status-strip">
-            <span>Status: <strong>{syncStatus.sync.status}</strong></span>
-            <span>Proxima tentativa: <strong>{formatSyncedAt(syncStatus.sync.next_attempt_at)}</strong></span>
-            {syncStatus.sync.last_error && <span>Ultimo erro: <strong>{syncStatus.sync.last_error}</strong></span>}
-          </div>
-        )}
 
         {activeTab === 'summary' && (
-          <>
-            <WorldCupStatsPanel groups={groups} bracketStages={bracketStages} />
-            <div className="diagnostic-grid" style={{ marginTop: 18 }}>
-              <article><Activity size={22} /><span>Status da edicao</span><strong>{edition?.status ?? 'sem dados'}</strong></article>
-              <article><RefreshCcw size={22} /><span>Ultima sync</span><strong>{formatSyncedAt(meta.last_synced_at)}</strong></article>
-              <article><Activity size={22} /><span>Chamadas hoje</span><strong>{syncStatus?.budget ? `${syncStatus.budget.calls_used_today}/${syncStatus.budget.daily_limit}` : '0/1000'}</strong></article>
-            </div>
-          </>
+          <WorldCupStatsPanel groups={groups} bracketStages={bracketStages} />
         )}
 
         {activeTab === 'groups' && (

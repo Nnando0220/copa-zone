@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /cadastro
+Disallow: /dashboard
+Disallow: /ligas
+Disallow: /copa/dados
+
+Sitemap: https://copazone.app/sitemap.xml
