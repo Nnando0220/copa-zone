@@ -7,7 +7,7 @@ import { portalService } from '../services/portal-service';
 
 const MIN_MEMBERS = 2;
 const MAX_MEMBERS = 32;
-const NAME_MAX = 120;
+const NAME_MAX = 32;
 const suggestedLimits = [8, 16, 24, 32];
 
 const initialLeagueForm = {
@@ -35,7 +35,7 @@ const creationPhases = [
     id: 'capacity',
     eyebrow: 'Arquibancada',
     title: 'Defina a capacidade',
-    copy: 'Use o controle da arquibancada para escolher ate 32 lugares para a liga.',
+    copy: 'Use o controle da arquibancada para escolher até 32 lugares para a liga.',
     artClass: 'capacity',
   },
   {
@@ -62,7 +62,7 @@ function clampCapacity(value) {
 }
 
 function visibilityLabel(visibility) {
-  return visibility === 'private' ? 'Entrada com convite' : 'Portões abertos';
+  return visibility === 'private' ? 'Liga privada com convite' : 'Liga pública aberta';
 }
 
 export function CreateLeaguePage() {
@@ -214,7 +214,7 @@ export function CreateLeaguePage() {
               onBlur={() => setForm((current) => ({ ...current, name: normalizeLeagueName(current.name) }))}
               minLength={3}
               maxLength={NAME_MAX}
-              placeholder="Liga dos Amigos"
+              placeholder="Nome da liga"
               aria-invalid={Boolean(fieldErrors.name)}
               aria-describedby={fieldErrors.name ? 'league-name-error' : 'league-name-help'}
               required
@@ -230,32 +230,8 @@ export function CreateLeaguePage() {
     if (activePhase.id === 'visibility') {
       return (
         <div className="phase-scene-layer">
-          <fieldset className="stadium-gate-selector">
-            <legend>Tipo de acesso</legend>
-            <label className={form.visibility === 'public' ? 'selected' : undefined}>
-              <input
-                type="radio"
-                name="visibility"
-                value="public"
-                checked={form.visibility === 'public'}
-                onChange={updateField}
-              />
-              <span className="gate-doors open" aria-hidden="true">
-                <span />
-                <span />
-              </span>
-              {form.visibility === 'public' && (
-                <span className="gate-selected-badge" aria-hidden="true">
-                  <CheckCircle2 size={15} />
-                </span>
-              )}
-              <span className="gate-choice-copy">
-                <Globe2 size={20} />
-                <strong>Portões abertos</strong>
-                <span className="gate-choice-desc">Qualquer torcedor pode encontrar e entrar na liga livremente.</span>
-              </span>
-            </label>
-            <label className={form.visibility === 'private' ? 'selected' : undefined}>
+          <fieldset className="stadium-gate-selector" aria-label="Escolher privacidade da liga">
+            <label className={`gate-choice-card private ${form.visibility === 'private' ? 'selected' : ''}`}>
               <input
                 type="radio"
                 name="visibility"
@@ -263,9 +239,9 @@ export function CreateLeaguePage() {
                 checked={form.visibility === 'private'}
                 onChange={updateField}
               />
-              <span className="gate-doors closed" aria-hidden="true">
-                <span />
-                <span />
+              <span className="gate-lock gate-lock-private" aria-hidden="true">
+                <span className="lock-shackle" />
+                <span className="lock-body" />
               </span>
               {form.visibility === 'private' && (
                 <span className="gate-selected-badge" aria-hidden="true">
@@ -274,8 +250,31 @@ export function CreateLeaguePage() {
               )}
               <span className="gate-choice-copy">
                 <LockKeyhole size={20} />
-                <strong>Entrada com convite</strong>
-                <span className="gate-choice-desc">Somente quem receber o código de convite poderá participar.</span>
+                <strong>Liga privada</strong>
+                <span className="gate-choice-desc">Passe o mouse para fechar o portão com cadeado. Só entra quem receber convite.</span>
+              </span>
+            </label>
+            <label className={`gate-choice-card public ${form.visibility === 'public' ? 'selected' : ''}`}>
+              <input
+                type="radio"
+                name="visibility"
+                value="public"
+                checked={form.visibility === 'public'}
+                onChange={updateField}
+              />
+              <span className="gate-lock gate-lock-public" aria-hidden="true">
+                <span className="lock-shackle" />
+                <span className="lock-body" />
+              </span>
+              {form.visibility === 'public' && (
+                <span className="gate-selected-badge" aria-hidden="true">
+                  <CheckCircle2 size={15} />
+                </span>
+              )}
+              <span className="gate-choice-copy">
+                <Globe2 size={20} />
+                <strong>Liga pública</strong>
+                <span className="gate-choice-desc">Passe o mouse para abrir o cadeado. Qualquer torcedor pode encontrar e entrar.</span>
               </span>
             </label>
             {fieldErrors.visibility && <p className="field-error">{fieldErrors.visibility}</p>}

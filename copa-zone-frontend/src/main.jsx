@@ -318,7 +318,7 @@ function PublicInfoPage({ page, path }) {
 
 function NotFoundPage() {
   return (
-    <main className="not-found-page">
+        <main className="not-found-page">
       <Seo
         title="Página não encontrada"
         description="O endereço informado não existe ou não está mais disponível no CopaZone."

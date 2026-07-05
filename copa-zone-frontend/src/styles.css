@@ -194,6 +194,63 @@ h3 {
   text-transform: uppercase;
 }
 
+.brand-logo {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-image {
+  width: 40px;
+  height: 40px;
+  display: block;
+  flex: 0 0 auto;
+  border-radius: 18px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(4, 120, 87, 0.18));
+}
+
+.brand-logo-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.brand-logo-copy strong,
+.brand-logo-copy small {
+  display: block;
+  line-height: 1.1;
+}
+
+.brand-logo-copy strong {
+  color: var(--cz-navy);
+  font-size: 1.04rem;
+}
+
+.brand-logo-copy small {
+  color: #647067;
+  font-size: 0.76rem;
+}
+
+.brand-logo-hero {
+  margin-bottom: 12px;
+}
+
+.brand-logo-auth .brand-logo-copy strong,
+.brand-logo-shell .brand-logo-copy strong {
+  color: var(--cz-white);
+}
+
+.brand-logo-auth .brand-logo-copy small,
+.brand-logo-shell .brand-logo-copy small {
+  color: rgba(246, 240, 223, 0.76);
+}
+
+.brand-logo-panel {
+  margin-bottom: 10px;
+}
+
 .public-info-hero,
 .public-info-grid article,
 .public-info-nav {
@@ -1227,20 +1284,9 @@ h3 {
 
 .shell-brand {
   display: flex;
-  gap: 12px;
   align-items: center;
   padding-bottom: 18px;
   border-bottom: 1px solid rgba(246, 240, 223, 0.18);
-}
-
-.shell-brand-mark {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-  background: var(--cz-gold);
-  color: var(--cz-navy);
 }
 
 .shell-brand strong,
@@ -4019,6 +4065,11 @@ h3 {
   margin-bottom: 16px;
 }
 
+.section-header > div {
+  display: grid;
+  gap: 6px;
+}
+
 .section-header a,
 .empty-state a {
   min-height: 38px;
@@ -4806,6 +4857,7 @@ h3 {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: 18px;
+  row-gap: 4px;
   align-items: center;
   padding: 10px 16px;
   border: 1px solid rgba(255, 255, 255, 0.24);
@@ -4822,6 +4874,7 @@ h3 {
 }
 
 .embedded-phase-heading h3 {
+  margin: 0;
   color: var(--cz-navy);
   font-size: 1.18rem;
   line-height: 1.1;
@@ -4829,7 +4882,7 @@ h3 {
 
 .embedded-phase-heading p:last-child {
   grid-column: 2;
-  margin: -6px 0 0;
+  margin: 0;
   color: #647067;
   line-height: 1.25;
 }
@@ -4983,66 +5036,140 @@ h3 {
 }
 
 .stadium-gate-selector {
-  left: 50%;
-  top: 160px;
-  width: min(880px, calc(100% - 80px));
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
   padding: 0;
   border: 0;
-  transform: translateX(-50%);
-}
-
-.stadium-gate-selector legend {
-  grid-column: 1 / -1;
-  justify-self: center;
-  padding: 9px 22px;
-  border: 1px solid rgba(233, 186, 90, 0.48);
-  border-radius: 999px;
-  background: rgba(3, 32, 34, 0.82);
-  font-size: 0.78rem;
-  font-weight: 1000;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #e9ba5a;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
 }
 
 .stadium-gate-selector label {
-  position: relative;
-  min-height: 340px;
+  position: absolute;
   display: grid;
   align-content: end;
-  gap: 16px;
+  justify-items: center;
   overflow: hidden;
-  padding: 24px;
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  background:
-    radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.06), transparent 60%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(4, 20, 24, 0.4)),
-    rgba(4, 20, 24, 0.32);
+  padding: 0 20px 28px;
+  border: 0;
+  border-radius: 26px 26px 10px 10px;
+  background: transparent;
   color: #f8faf6;
   cursor: pointer;
-  box-shadow:
-    0 24px 48px rgba(2, 8, 13, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  pointer-events: auto;
+  perspective: 900px;
   transition:
-    border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    filter 0.35s ease,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stadium-gate-selector label::before,
+.stadium-gate-selector label::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 31%;
+  bottom: 12%;
+  width: 48%;
+  border: 1px solid rgba(178, 220, 215, 0.42);
+  background:
+    linear-gradient(90deg, transparent 0 8%, rgba(173, 232, 219, 0.38) 8% 10%, transparent 10% 18%, rgba(173, 232, 219, 0.34) 18% 20%, transparent 20% 28%, rgba(173, 232, 219, 0.32) 28% 30%, transparent 30% 38%, rgba(173, 232, 219, 0.32) 38% 40%, transparent 40% 48%, rgba(173, 232, 219, 0.3) 48% 50%, transparent 50% 58%, rgba(173, 232, 219, 0.32) 58% 60%, transparent 60% 68%, rgba(173, 232, 219, 0.32) 68% 70%, transparent 70% 78%, rgba(173, 232, 219, 0.34) 78% 80%, transparent 80% 88%, rgba(173, 232, 219, 0.38) 88% 90%, transparent 90%),
+    linear-gradient(180deg, rgba(3, 24, 27, 0.14), rgba(3, 24, 27, 0.4));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 26px 42px rgba(2, 8, 13, 0.32);
+  opacity: 0;
+  transform-style: preserve-3d;
+  transition:
+    opacity 0.32s ease,
+    transform 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.32s ease;
+}
+
+.stadium-gate-selector label::before {
+  left: 3.5%;
+  transform-origin: left center;
+}
+
+.stadium-gate-selector label::after {
+  right: 3.5%;
+  transform-origin: right center;
+}
+
+.stadium-gate-selector .gate-choice-card {
+  isolation: isolate;
+}
+
+.stadium-gate-selector .gate-choice-card.private {
+  left: 8.8%;
+  top: 29.5%;
+  width: 39%;
+  height: 52.5%;
+}
+
+.stadium-gate-selector .gate-choice-card.public {
+  left: 57.2%;
+  top: 32.8%;
+  width: 28.6%;
+  height: 48.2%;
+}
+
+.stadium-gate-selector .gate-choice-card.private::before,
+.stadium-gate-selector .gate-choice-card.private::after {
+  top: 12%;
+  bottom: 1%;
+  border-color: rgba(158, 252, 188, 0.52);
+  background:
+    linear-gradient(90deg, transparent 0 7%, rgba(180, 255, 199, 0.5) 7% 9%, transparent 9% 18%, rgba(180, 255, 199, 0.42) 18% 20%, transparent 20% 31%, rgba(180, 255, 199, 0.38) 31% 33%, transparent 33% 44%, rgba(180, 255, 199, 0.36) 44% 46%, transparent 46% 56%, rgba(180, 255, 199, 0.36) 56% 58%, transparent 58% 69%, rgba(180, 255, 199, 0.38) 69% 71%, transparent 71% 82%, rgba(180, 255, 199, 0.42) 82% 84%, transparent 84% 93%, rgba(180, 255, 199, 0.5) 93% 95%, transparent 95%),
+    linear-gradient(180deg, rgba(3, 44, 35, 0.12), rgba(2, 30, 31, 0.42));
+}
+
+.stadium-gate-selector .gate-choice-card.public::before,
+.stadium-gate-selector .gate-choice-card.public::after {
+  top: 12%;
+  bottom: 3%;
+  border-color: rgba(147, 215, 255, 0.42);
+  background:
+    linear-gradient(90deg, transparent 0 7%, rgba(147, 215, 255, 0.34) 7% 9%, transparent 9% 18%, rgba(147, 215, 255, 0.28) 18% 20%, transparent 20% 31%, rgba(147, 215, 255, 0.25) 31% 33%, transparent 33% 44%, rgba(147, 215, 255, 0.25) 44% 46%, transparent 46% 56%, rgba(147, 215, 255, 0.25) 56% 58%, transparent 58% 69%, rgba(147, 215, 255, 0.25) 69% 71%, transparent 71% 82%, rgba(147, 215, 255, 0.28) 82% 84%, transparent 84% 93%, rgba(147, 215, 255, 0.34) 93% 95%, transparent 95%),
+    linear-gradient(180deg, rgba(3, 24, 37, 0.22), rgba(2, 21, 31, 0.55));
+  opacity: 0.92;
+}
+
+.stadium-gate-selector .gate-choice-card.private::before {
+  transform: translateX(-78%) rotateY(64deg);
+}
+
+.stadium-gate-selector .gate-choice-card.private::after {
+  transform: translateX(78%) rotateY(-64deg);
+}
+
+.stadium-gate-selector .gate-choice-card.private:hover::before,
+.stadium-gate-selector .gate-choice-card.private.selected::before,
+.stadium-gate-selector .gate-choice-card.private:hover::after,
+.stadium-gate-selector .gate-choice-card.private.selected::after {
+  opacity: 0.98;
+  transform: translateX(0) rotateY(0);
+}
+
+.stadium-gate-selector .gate-choice-card.public::before,
+.stadium-gate-selector .gate-choice-card.public::after {
+  transform: rotateY(0);
+}
+
+.stadium-gate-selector .gate-choice-card.public:hover::before,
+.stadium-gate-selector .gate-choice-card.public.selected::before {
+  transform: rotateY(58deg);
+}
+
+.stadium-gate-selector .gate-choice-card.public:hover::after,
+.stadium-gate-selector .gate-choice-card.public.selected::after {
+  transform: rotateY(-58deg);
 }
 
 .stadium-gate-selector label:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 32px 58px rgba(2, 8, 13, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  filter: drop-shadow(0 0 18px rgba(233, 186, 90, 0.26));
+  transform: translateY(-2px);
 }
 
 .stadium-gate-selector input {
@@ -5051,41 +5178,22 @@ h3 {
 }
 
 .stadium-gate-selector label.selected {
-  border-color: rgba(233, 186, 90, 0.7);
-  background:
-    radial-gradient(ellipse at 50% 20%, rgba(233, 186, 90, 0.1), transparent 60%),
-    linear-gradient(180deg, rgba(233, 186, 90, 0.06), rgba(4, 20, 24, 0.38)),
-    rgba(4, 20, 24, 0.42);
-  box-shadow:
-    0 0 0 4px rgba(233, 186, 90, 0.14),
-    0 0 38px rgba(233, 186, 90, 0.12),
-    0 28px 52px rgba(2, 8, 13, 0.36),
-    inset 0 1px 0 rgba(233, 186, 90, 0.2);
-  animation: gate-glow 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 22px rgba(233, 186, 90, 0.38));
 }
 
 .stadium-gate-selector label.selected:hover {
-  box-shadow:
-    0 0 0 4px rgba(233, 186, 90, 0.18),
-    0 0 48px rgba(233, 186, 90, 0.16),
-    0 32px 58px rgba(2, 8, 13, 0.4),
-    inset 0 1px 0 rgba(233, 186, 90, 0.24);
-}
-
-@keyframes gate-glow {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(233, 186, 90, 0.14), 0 0 38px rgba(233, 186, 90, 0.12), 0 28px 52px rgba(2, 8, 13, 0.36), inset 0 1px 0 rgba(233, 186, 90, 0.2); }
-  50% { box-shadow: 0 0 0 5px rgba(233, 186, 90, 0.22), 0 0 52px rgba(233, 186, 90, 0.18), 0 28px 52px rgba(2, 8, 13, 0.36), inset 0 1px 0 rgba(233, 186, 90, 0.28); }
+  filter: drop-shadow(0 0 28px rgba(233, 186, 90, 0.44));
 }
 
 .stadium-gate-selector label:has(input:focus-visible) {
   outline: 3px solid rgba(233, 186, 90, 0.38);
-  outline-offset: 4px;
+  outline-offset: -3px;
 }
 
 .gate-selected-badge {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 24px;
+  right: 24px;
   z-index: 3;
   width: 32px;
   height: 32px;
@@ -5097,105 +5205,139 @@ h3 {
   box-shadow: 0 4px 14px rgba(233, 186, 90, 0.45);
 }
 
-.gate-doors {
+.gate-lock {
   position: absolute;
-  inset: 22px 22px 110px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  perspective: 520px;
+  left: 50%;
+  top: 48%;
+  z-index: 2;
+  width: 62px;
+  height: 72px;
+  display: block;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 18px 24px rgba(2, 8, 13, 0.46));
+  transition:
+    opacity 0.28s ease,
+    transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.gate-doors span {
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  border-radius: 4px 4px 0 0;
+.gate-lock .lock-shackle,
+.gate-lock .lock-body {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.gate-lock .lock-shackle {
+  top: 0;
+  width: 38px;
+  height: 34px;
+  border: 6px solid #e9ba5a;
+  border-bottom: 0;
+  border-radius: 22px 22px 0 0;
+  transform-origin: 8px 34px;
+  transition: transform 0.34s ease;
+}
+
+.gate-lock .lock-body {
+  bottom: 0;
+  width: 54px;
+  height: 42px;
+  border-radius: 8px;
   background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 9px, transparent 9px 19px),
-    linear-gradient(180deg, rgba(15, 118, 110, 0.3), rgba(5, 44, 53, 0.4));
+    radial-gradient(circle at 50% 46%, rgba(3, 24, 27, 0.86) 0 4px, transparent 5px),
+    linear-gradient(180deg, #f5d57d, #c8922d);
   box-shadow:
-    inset 0 -18px 0 rgba(16, 24, 39, 0.15),
-    0 0 15px rgba(233, 186, 90, 0);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -8px 0 rgba(16, 24, 39, 0.16);
 }
 
-.stadium-gate-selector label.selected .gate-doors span {
-  border-color: rgba(233, 186, 90, 0.55);
-  background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0 9px, transparent 9px 19px),
-    linear-gradient(180deg, rgba(233, 186, 90, 0.2), rgba(4, 120, 87, 0.45));
-  box-shadow:
-    inset 0 -18px 0 rgba(16, 24, 39, 0.18),
-    0 0 28px rgba(233, 186, 90, 0.2);
+.gate-lock-private {
+  opacity: 0;
+  transform: translate(-50%, -34%) scale(0.66);
 }
 
-.gate-doors.open span:first-child {
-  transform: rotateY(42deg);
-  transform-origin: left center;
+.gate-choice-card.private:hover .gate-lock-private,
+.gate-choice-card.private.selected .gate-lock-private {
+  opacity: 1;
+  transform: translate(-50%, -48%) scale(1);
 }
 
-.gate-doors.open span:last-child {
-  transform: rotateY(-42deg);
-  transform-origin: right center;
+.gate-lock-public {
+  opacity: 1;
 }
 
-.stadium-gate-selector label:hover .gate-doors.open span:first-child {
-  transform: rotateY(58deg);
+.gate-choice-card.public:hover .gate-lock-public .lock-shackle,
+.gate-choice-card.public.selected .gate-lock-public .lock-shackle {
+  transform: translateX(-50%) rotate(-42deg);
 }
 
-.stadium-gate-selector label:hover .gate-doors.open span:last-child {
-  transform: rotateY(-58deg);
-}
-
-.gate-doors.closed span:first-child {
-  border-right-width: 1px;
-}
-
-.gate-doors.closed span:last-child {
-  border-left-width: 1px;
-}
-
-.stadium-gate-selector label:hover .gate-doors.closed span:first-child {
-  transform: rotateY(-6deg);
-  transform-origin: left center;
-}
-
-.stadium-gate-selector label:hover .gate-doors.closed span:last-child {
-  transform: rotateY(6deg);
-  transform-origin: right center;
+.gate-choice-card.public:hover .gate-lock-public,
+.gate-choice-card.public.selected .gate-lock-public {
+  opacity: 0.34;
+  transform: translate(-50%, -64%) rotate(-8deg) scale(0.9);
 }
 
 .gate-choice-copy {
   position: relative;
   z-index: 2;
+  width: min(260px, 100%);
   display: grid;
-  gap: 6px;
-  padding: 16px;
-  border-radius: 10px;
-  background: rgba(3, 24, 27, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  grid-template-columns: auto 1fr;
+  gap: 4px 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(233, 186, 90, 0.24);
+  border-radius: 999px;
+  background: rgba(3, 24, 27, 0.54);
+  box-shadow: 0 12px 28px rgba(2, 8, 13, 0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   line-height: 1.35;
+  transform: translateY(12px);
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
 }
 
 .gate-choice-copy svg {
   color: #e9ba5a;
+  grid-row: span 2;
 }
 
 .gate-choice-copy strong {
   color: #fef7df;
-  font-size: 1.08rem;
+  font-size: 0.92rem;
   letter-spacing: 0.01em;
 }
 
 .gate-choice-desc {
   display: block;
-  margin-top: 2px;
   color: rgba(248, 250, 246, 0.68);
-  font-size: 0.84rem;
-  line-height: 1.5;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-4px);
+  transition:
+    max-height 0.25s ease,
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.stadium-gate-selector label:hover .gate-choice-copy,
+.stadium-gate-selector label.selected .gate-choice-copy {
+  border-color: rgba(233, 186, 90, 0.48);
+  background: rgba(3, 24, 27, 0.76);
+  transform: translateY(0);
+}
+
+.stadium-gate-selector label:hover .gate-choice-desc,
+.stadium-gate-selector label.selected .gate-choice-desc {
+  max-height: 44px;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .stadium-gate-selector label.selected .gate-choice-desc {
@@ -5750,6 +5892,12 @@ h3 {
   gap: 12px;
   align-items: center;
   padding: 14px;
+}
+
+.invite-route-card > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
 }
 
 .created-league-code {
@@ -6737,23 +6885,61 @@ h3 {
   }
 
   .stadium-gate-selector {
-    top: 220px;
-    width: calc(100% - 32px);
-    grid-template-columns: 1fr;
-    gap: 12px;
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .stadium-gate-selector label {
-    min-height: 174px;
-    padding: 14px;
+    padding: 0 8px 18px;
   }
 
-  .gate-doors {
-    inset: 12px 12px 66px;
+  .stadium-gate-selector .gate-choice-card.private {
+    left: 4%;
+    top: 34%;
+    width: 45%;
+    height: 34%;
+  }
+
+  .stadium-gate-selector .gate-choice-card.public {
+    left: 51%;
+    top: 36%;
+    width: 45%;
+    height: 34%;
+  }
+
+  .gate-lock {
+    width: 46px;
+    height: 54px;
+  }
+
+  .gate-lock .lock-shackle {
+    width: 29px;
+    height: 26px;
+    border-width: 5px;
+  }
+
+  .gate-lock .lock-body {
+    width: 42px;
+    height: 32px;
   }
 
   .gate-choice-copy {
-    padding: 10px;
+    width: 100%;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 3px;
+    padding: 8px 10px;
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .gate-choice-copy svg {
+    grid-row: auto;
+  }
+
+  .gate-choice-desc {
+    display: none;
   }
 
   .stadium-gate-caption {
@@ -6974,6 +7160,10 @@ h3 {
 
   .app-header {
     align-items: flex-start;
+  }
+
+  .brand-logo-copy strong {
+    font-size: 0.96rem;
   }
 
   .section-header,

@@ -18,7 +18,7 @@ class CreateLeagueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:3', 'max:120'],
+            'name' => ['required', 'string', 'min:3', 'max:32'],
             'visibility' => ['required', Rule::in(['public', 'private'])],
             'max_members' => ['required', 'integer', 'min:2', 'max:128'],
         ];
