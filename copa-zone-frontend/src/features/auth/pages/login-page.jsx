@@ -230,6 +230,14 @@ export function LoginPage({ onAuthenticated }) {
                   <FieldError message={errors.password?.message} />
                 </div>
 
+                <label className="remember-ticket-option">
+                  <input type="checkbox" {...register('remember')} />
+                  <span>
+                    <strong>Manter meu ingresso validado</strong>
+                    <small>Continuar conectado neste dispositivo.</small>
+                  </span>
+                </label>
+
                 <div className="ticket-meta-grid">
                   <div>
                     <span>Portão</span>

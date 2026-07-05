@@ -1,24 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { Toaster, toast } from 'sonner';
 import { ShieldCheck, Trophy, Users } from 'lucide-react';
-import { LoginPage } from './features/auth/pages/login-page';
-import { RegisterPage } from './features/auth/pages/register-page';
 import { authService } from './features/auth/services/auth-service';
-import { DashboardPage } from './features/dashboard/pages/dashboard-page';
-import { AuthenticatedShell } from './features/portal/components/authenticated-shell';
-import { CreateLeaguePage } from './features/portal/pages/create-league-page';
-import { JoinLeaguePage } from './features/portal/pages/join-league-page';
-import { LeagueDetailPage } from './features/portal/pages/league-detail-page';
-import { LeagueWorldCupPage } from './features/portal/pages/league-world-cup-page';
-import { MyLeaguesPage } from './features/portal/pages/my-leagues-page';
-import { PublicLeaguesPage } from './features/portal/pages/public-leagues-page';
-import { WorldCupDataPage } from './features/portal/pages/world-cup-data-page';
 import './styles.css';
 
+const LoginPage = lazy(() => import('./features/auth/pages/login-page').then((module) => ({ default: module.LoginPage })));
+const RegisterPage = lazy(() => import('./features/auth/pages/register-page').then((module) => ({ default: module.RegisterPage })));
+const DashboardPage = lazy(() => import('./features/dashboard/pages/dashboard-page').then((module) => ({ default: module.DashboardPage })));
+const AuthenticatedShell = lazy(() => import('./features/portal/components/authenticated-shell').then((module) => ({ default: module.AuthenticatedShell })));
+const CreateLeaguePage = lazy(() => import('./features/portal/pages/create-league-page').then((module) => ({ default: module.CreateLeaguePage })));
+const JoinLeaguePage = lazy(() => import('./features/portal/pages/join-league-page').then((module) => ({ default: module.JoinLeaguePage })));
+const LeagueDetailPage = lazy(() => import('./features/portal/pages/league-detail-page').then((module) => ({ default: module.LeagueDetailPage })));
+const LeagueWorldCupPage = lazy(() => import('./features/portal/pages/league-world-cup-page').then((module) => ({ default: module.LeagueWorldCupPage })));
+const MyLeaguesPage = lazy(() => import('./features/portal/pages/my-leagues-page').then((module) => ({ default: module.MyLeaguesPage })));
+const PublicLeaguesPage = lazy(() => import('./features/portal/pages/public-leagues-page').then((module) => ({ default: module.PublicLeaguesPage })));
+const WorldCupDataPage = lazy(() => import('./features/portal/pages/world-cup-data-page').then((module) => ({ default: module.WorldCupDataPage })));
+
 const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://copazone.app').replace(/\/+$/, '');
-const DEFAULT_IMAGE = `${SITE_URL}/brand/copa-zone-logo.png`;
+const DEFAULT_IMAGE = `${SITE_URL}/brand/copa-zone-social.png`;
 const DEFAULT_DESCRIPTION =
   'Crie uma liga recreativa da Copa do Mundo 2026, convide amigos, registre palpites e acompanhe o ranking em um só lugar.';
 
@@ -169,6 +170,8 @@ function Seo({ title, description = DEFAULT_DESCRIPTION, path, robots = 'index,f
     upsertMeta('meta[property="og:title"]', () => document.createElement('meta'), { property: 'og:title', content: fullTitle });
     upsertMeta('meta[property="og:description"]', () => document.createElement('meta'), { property: 'og:description', content: description });
     upsertMeta('meta[property="og:image"]', () => document.createElement('meta'), { property: 'og:image', content: DEFAULT_IMAGE });
+    upsertMeta('meta[property="og:image:width"]', () => document.createElement('meta'), { property: 'og:image:width', content: '1200' });
+    upsertMeta('meta[property="og:image:height"]', () => document.createElement('meta'), { property: 'og:image:height', content: '630' });
     upsertMeta('meta[name="twitter:card"]', () => document.createElement('meta'), { name: 'twitter:card', content: 'summary_large_image' });
     upsertMeta('meta[name="twitter:image"]', () => document.createElement('meta'), { name: 'twitter:image', content: DEFAULT_IMAGE });
     if (structuredData) {
@@ -472,7 +475,8 @@ function AppRoutes() {
 
   return (
     <>
-      <Routes>
+      <Suspense fallback={<GuardScreen title="Carregando CopaZone" />}>
+        <Routes>
         <Route path="/" element={<HomeRoute user={user} isBooting={isBooting} />} />
         {Object.entries(publicPages).map(([path, page]) => (
           <Route key={path} path={path} element={<PublicInfoPage page={page} path={path} />} />
@@ -618,7 +622,8 @@ function AppRoutes() {
           }
         />
         <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+        </Routes>
+      </Suspense>
       <Toaster richColors position="top-right" />
     </>
   );

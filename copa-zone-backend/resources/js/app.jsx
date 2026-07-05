@@ -6,6 +6,7 @@ const initialForm = {
     email: '',
     password: '',
     password_confirmation: '',
+    remember: false,
 };
 
 async function apiRequest(path, options = {}) {
@@ -81,9 +82,11 @@ function App() {
     }, []);
 
     function updateField(event) {
+        const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+
         setForm((current) => ({
             ...current,
-            [event.target.name]: event.target.value,
+            [event.target.name]: value,
         }));
     }
 
@@ -96,7 +99,7 @@ function App() {
         const path = isRegister ? '/api/v1/auth/register' : '/api/v1/auth/login';
         const body = isRegister
             ? form
-            : { email: form.email, password: form.password };
+            : { email: form.email, password: form.password, remember: form.remember };
 
         try {
             await refreshCsrfToken();
@@ -225,6 +228,18 @@ function App() {
                                     autoComplete="new-password"
                                     required
                                 />
+                            </label>
+                        )}
+
+                        {!isRegister && (
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="remember"
+                                    checked={form.remember}
+                                    onChange={updateField}
+                                />
+                                Manter conectado neste dispositivo
                             </label>
                         )}
 
