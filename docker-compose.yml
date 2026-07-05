@@ -19,7 +19,7 @@ services:
     build:
       context: ./copa-zone-backend
     env_file:
-      - ./copa-zone-backend/.env.docker.example
+      - ./copa-zone-backend/.env.docker
     environment:
       APP_NAME: CopaZone
       APP_ENV: local
@@ -44,7 +44,7 @@ services:
       - "8000:8000"
     volumes:
       - ./copa-zone-backend:/var/www/html
-      - ./copa-zone-backend/.env.docker.example:/var/www/html/.env:ro
+      - ./copa-zone-backend/.env.docker:/var/www/html/.env:ro
       - backend_vendor:/var/www/html/vendor
     depends_on:
       postgres:
@@ -54,7 +54,7 @@ services:
     build:
       context: ./copa-zone-backend
     env_file:
-      - ./copa-zone-backend/.env.docker.example
+      - ./copa-zone-backend/.env.docker
     environment:
       APP_NAME: CopaZone
       APP_ENV: local
@@ -77,7 +77,7 @@ services:
       REVERB_SCHEME: http
     volumes:
       - ./copa-zone-backend:/var/www/html
-      - ./copa-zone-backend/.env.docker.example:/var/www/html/.env:ro
+      - ./copa-zone-backend/.env.docker:/var/www/html/.env:ro
       - backend_vendor:/var/www/html/vendor
     depends_on:
       postgres:
@@ -90,7 +90,7 @@ services:
     build:
       context: ./copa-zone-backend
     env_file:
-      - ./copa-zone-backend/.env.docker.example
+      - ./copa-zone-backend/.env.docker
     environment:
       APP_NAME: CopaZone
       APP_ENV: local
@@ -114,7 +114,7 @@ services:
       - "8080:8080"
     volumes:
       - ./copa-zone-backend:/var/www/html
-      - ./copa-zone-backend/.env.docker.example:/var/www/html/.env:ro
+      - ./copa-zone-backend/.env.docker:/var/www/html/.env:ro
       - backend_vendor:/var/www/html/vendor
     depends_on:
       postgres:
@@ -142,7 +142,7 @@ services:
       - frontend_node_modules:/app/node_modules
     depends_on:
       - backend
-    command: sh -c "if [ ! -d node_modules/vite ] || [ ! -d node_modules/laravel-echo ] || [ ! -d node_modules/pusher-js ]; then npm ci --include=dev; fi && npm run dev -- --host 0.0.0.0 --port 5173 --force"
+    command: sh -c "if [ ! -d node_modules/vite ] || [ ! -d node_modules/laravel-echo ] || [ ! -d node_modules/pusher-js ] || [ ! -d node_modules/gsap ]; then npm install --include=dev; fi && npm run dev -- --host 0.0.0.0 --port 5173 --force"
 
 volumes:
   postgres_data:

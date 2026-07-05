@@ -1,13 +1,14 @@
 import { Link, NavLink } from 'react-router';
-import { CalendarDays, Globe2, Home, KeyRound, LockKeyhole, LogOut, Menu, Plus, Trophy, UserRound } from 'lucide-react';
+import { CalendarDays, Globe2, Home, KeyRound, LockKeyhole, LogOut, Menu, Plus, UserRound } from 'lucide-react';
 import { useState } from 'react';
+import { BrandLogo } from '../../../components/brand-logo';
 
 const navItems = [
-  { to: '/dashboard', label: 'Início', icon: Home },
+  { to: '/dashboard', label: 'Inicio', icon: Home },
   { to: '/ligas/minhas', label: 'Minhas ligas', icon: LockKeyhole },
-  { to: '/ligas/publicas', label: 'Ligas públicas', icon: Globe2 },
+  { to: '/ligas/publicas', label: 'Ligas publicas', icon: Globe2 },
   { to: '/copa/dados', label: 'Dados da Copa', icon: CalendarDays },
-  { to: '/ligas/entrar', label: 'Entrar por código', icon: KeyRound },
+  { to: '/ligas/entrar', label: 'Entrar por codigo', icon: KeyRound },
   { to: '/ligas/criar', label: 'Criar liga', icon: Plus },
 ];
 
@@ -18,13 +19,7 @@ export function AuthenticatedShell({ user, onLogout, isLoggingOut, title, subtit
     <div className="app-shell">
       <aside className={isMenuOpen ? 'app-sidebar open' : 'app-sidebar'}>
         <Link to="/dashboard" className="shell-brand">
-          <span className="shell-brand-mark">
-            <Trophy size={19} />
-          </span>
-          <span>
-            <strong>CopaZone</strong>
-            <small>Copa do Mundo</small>
-          </span>
+          <BrandLogo className="brand-logo-shell" subtitle="Copa do Mundo" />
         </Link>
 
         <nav className="shell-nav" aria-label="Menu principal">
@@ -67,7 +62,6 @@ export function AuthenticatedShell({ user, onLogout, isLoggingOut, title, subtit
             <Menu size={21} />
           </button>
           <div>
-            <p className="eyebrow">CopaZone</p>
             <h1>{title}</h1>
             <p>{subtitle}</p>
           </div>
