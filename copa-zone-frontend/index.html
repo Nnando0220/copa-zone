@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Crie sua liga da Copa do Mundo 2026, convide amigos e acompanhe palpites e pontuação no CopaZone."
+      content="Crie uma liga recreativa da Copa do Mundo 2026, convide amigos, registre palpites e acompanhe o ranking em um só lugar."
     />
     <meta name="robots" content="index,follow" />
     <meta name="theme-color" content="#047857" />
@@ -16,10 +16,10 @@
     <meta property="og:site_name" content="CopaZone" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
-    <meta property="og:title" content="CopaZone | Bolão da Copa do Mundo 2026" />
+    <meta property="og:title" content="CopaZone | Liga de Palpites da Copa do Mundo 2026" />
     <meta
       property="og:description"
-      content="Crie sua liga da Copa do Mundo, convide amigos e acompanhe palpites e pontuação em um só lugar."
+      content="Crie uma liga recreativa da Copa do Mundo 2026, convide amigos, registre palpites e acompanhe o ranking em um só lugar."
     />
     <meta property="og:image" content="https://copazone.app/brand/copa-zone-logo.png" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -27,13 +27,42 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "CopaZone",
-        "url": "https://copazone.app",
-        "logo": "https://copazone.app/brand/copa-zone-logo.png"
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://copazone.app/#website",
+            "url": "https://copazone.app/",
+            "name": "CopaZone",
+            "alternateName": "Copa Zone",
+            "inLanguage": "pt-BR"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://copazone.app/#organization",
+            "name": "CopaZone",
+            "url": "https://copazone.app/",
+            "logo": "https://copazone.app/brand/copa-zone-logo.png",
+            "description": "Plataforma recreativa de ligas e palpites da Copa do Mundo 2026."
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://copazone.app/#webapp",
+            "name": "CopaZone",
+            "url": "https://copazone.app/",
+            "applicationCategory": "SportsApplication",
+            "operatingSystem": "Web",
+            "inLanguage": "pt-BR",
+            "description": "Crie uma liga recreativa da Copa do Mundo 2026, convide amigos, registre palpites e acompanhe o ranking em um só lugar.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "BRL"
+            }
+          }
+        ]
       }
     </script>
-    <title>CopaZone | Bolão da Copa do Mundo 2026</title>
+    <title>CopaZone | Liga de Palpites da Copa do Mundo 2026</title>
   </head>
   <body>
     <div id="root"></div>
