@@ -40,9 +40,14 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->validated();
+        $validated = $request->validated();
+        $remember = (bool) ($validated['remember'] ?? false);
+        $credentials = [
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+        ];
 
-        if (! Auth::attempt($credentials)) {
+        if (! Auth::attempt($credentials, $remember)) {
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);

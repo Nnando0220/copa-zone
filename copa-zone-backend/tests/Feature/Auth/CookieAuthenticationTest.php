@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -55,6 +56,26 @@ class CookieAuthenticationTest extends TestCase
         $this->getJson('/api/v1/me')
             ->assertOk()
             ->assertJsonPath('data.user.email', 'user@example.com');
+    }
+
+    public function test_user_can_login_with_remember_cookie(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'remember@example.com',
+            'password' => Hash::make('senha123'),
+        ]);
+
+        $response = $this->postJsonWithCsrf('/api/v1/auth/login', [
+            'email' => 'remember@example.com',
+            'password' => 'senha123',
+            'remember' => true,
+        ]);
+
+        $response
+            ->assertOk()
+            ->assertCookie(Auth::getRecallerName());
+
+        $this->assertAuthenticatedAs($user);
     }
 
     public function test_current_profile_requires_authentication(): void

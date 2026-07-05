@@ -13,6 +13,7 @@ export const authService = {
       body: JSON.stringify({
         email: payload.email,
         password: payload.password,
+        remember: Boolean(payload.remember),
       }),
     });
   },

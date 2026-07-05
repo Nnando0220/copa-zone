@@ -889,6 +889,42 @@ h3 {
   color: var(--cz-red);
 }
 
+.remember-ticket-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px dashed rgba(4, 120, 87, 0.34);
+  border-radius: 8px;
+  background: rgba(4, 120, 87, 0.07);
+  color: var(--cz-navy);
+  cursor: pointer;
+}
+
+.remember-ticket-option input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--cz-green);
+  flex: 0 0 auto;
+}
+
+.remember-ticket-option span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.remember-ticket-option strong {
+  font-size: 0.9rem;
+}
+
+.remember-ticket-option small {
+  color: rgba(16, 24, 39, 0.62);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
 .ticket-meta-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

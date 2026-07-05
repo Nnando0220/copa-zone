@@ -1,31 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { Toaster, toast } from 'sonner';
 import { ShieldCheck, Trophy, Users } from 'lucide-react';
-import { LoginPage } from './features/auth/pages/login-page';
-import { RegisterPage } from './features/auth/pages/register-page';
 import { authService } from './features/auth/services/auth-service';
-import { DashboardPage } from './features/dashboard/pages/dashboard-page';
-import { AuthenticatedShell } from './features/portal/components/authenticated-shell';
-import { CreateLeaguePage } from './features/portal/pages/create-league-page';
-import { JoinLeaguePage } from './features/portal/pages/join-league-page';
-import { LeagueDetailPage } from './features/portal/pages/league-detail-page';
-import { LeagueWorldCupPage } from './features/portal/pages/league-world-cup-page';
-import { MyLeaguesPage } from './features/portal/pages/my-leagues-page';
-import { PublicLeaguesPage } from './features/portal/pages/public-leagues-page';
-import { WorldCupDataPage } from './features/portal/pages/world-cup-data-page';
 import './styles.css';
 
+const LoginPage = lazy(() => import('./features/auth/pages/login-page').then((module) => ({ default: module.LoginPage })));
+const RegisterPage = lazy(() => import('./features/auth/pages/register-page').then((module) => ({ default: module.RegisterPage })));
+const DashboardPage = lazy(() => import('./features/dashboard/pages/dashboard-page').then((module) => ({ default: module.DashboardPage })));
+const AuthenticatedShell = lazy(() => import('./features/portal/components/authenticated-shell').then((module) => ({ default: module.AuthenticatedShell })));
+const CreateLeaguePage = lazy(() => import('./features/portal/pages/create-league-page').then((module) => ({ default: module.CreateLeaguePage })));
+const JoinLeaguePage = lazy(() => import('./features/portal/pages/join-league-page').then((module) => ({ default: module.JoinLeaguePage })));
+const LeagueDetailPage = lazy(() => import('./features/portal/pages/league-detail-page').then((module) => ({ default: module.LeagueDetailPage })));
+const LeagueWorldCupPage = lazy(() => import('./features/portal/pages/league-world-cup-page').then((module) => ({ default: module.LeagueWorldCupPage })));
+const MyLeaguesPage = lazy(() => import('./features/portal/pages/my-leagues-page').then((module) => ({ default: module.MyLeaguesPage })));
+const PublicLeaguesPage = lazy(() => import('./features/portal/pages/public-leagues-page').then((module) => ({ default: module.PublicLeaguesPage })));
+const WorldCupDataPage = lazy(() => import('./features/portal/pages/world-cup-data-page').then((module) => ({ default: module.WorldCupDataPage })));
+
 const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://copazone.app').replace(/\/+$/, '');
-const DEFAULT_IMAGE = `${SITE_URL}/images/stadium-invite-bg.png`;
+const DEFAULT_IMAGE = `${SITE_URL}/brand/copa-zone-social.png`;
 const DEFAULT_DESCRIPTION =
-  'O CopaZone ajuda você a criar ligas, convidar amigos e acompanhar palpites da Copa do Mundo 2026.';
+  'Crie uma liga recreativa da Copa do Mundo 2026, convide amigos, registre palpites e acompanhe o ranking em um só lugar.';
 
 const publicPages = {
   '/como-funciona': {
     eyebrow: 'Como funciona',
-    title: 'Como funciona o CopaZone',
+    title: 'Como funciona o CopaZone: ligas e palpites da Copa 2026',
     description:
       'Entenda como criar uma liga, convidar amigos, registrar palpites e acompanhar a disputa da Copa do Mundo 2026.',
     intro:
@@ -38,7 +39,7 @@ const publicPages = {
   },
   '/copa-do-mundo-2026': {
     eyebrow: 'Copa do Mundo 2026',
-    title: 'Copa do Mundo 2026 no CopaZone',
+    title: 'Copa do Mundo 2026: grupos, jogos e ligas',
     description:
       'Use o CopaZone para organizar ligas de palpites da Copa do Mundo 2026 com amigos.',
     intro:
@@ -51,7 +52,7 @@ const publicPages = {
   },
   '/regras': {
     eyebrow: 'Regras',
-    title: 'Regras do bolão da CopaZone',
+    title: 'Regras de pontuação e palpites',
     description:
       'Conheça as regras gerais para participar de ligas, enviar palpites e acompanhar a pontuação no CopaZone.',
     intro:
@@ -64,7 +65,7 @@ const publicPages = {
   },
   '/faq': {
     eyebrow: 'FAQ',
-    title: 'Perguntas frequentes sobre a CopaZone',
+    title: 'Dúvidas sobre ligas e palpites da Copa 2026',
     description:
       'Tire dúvidas sobre cadastro, ligas, palpites e funcionamento geral do CopaZone.',
     intro:
@@ -72,7 +73,20 @@ const publicPages = {
     sections: [
       { title: 'Preciso criar conta?', text: 'Sim. O cadastro permite guardar suas ligas, seus palpites e sua pontuação.' },
       { title: 'Posso convidar amigos?', text: 'Sim. A ideia do CopaZone é reunir pessoas em ligas para acompanhar a Copa juntas.' },
-      { title: 'A CopaZone é oficial da FIFA?', text: 'Não. A CopaZone é um aplicativo recreativo independente para bolões e ligas entre amigos.' },
+      { title: 'A CopaZone é oficial da FIFA?', text: 'Não. A CopaZone é um aplicativo recreativo independente para ligas de palpites entre amigos.' },
+    ],
+  },
+  '/sobre-o-copazone': {
+    eyebrow: 'Sobre o CopaZone',
+    title: 'Sobre o CopaZone',
+    description:
+      'Conheça o CopaZone, uma plataforma recreativa para criar ligas de palpites da Copa do Mundo 2026 entre amigos.',
+    intro:
+      'O CopaZone nasceu para transformar a Copa do Mundo em uma disputa leve, organizada e fácil de acompanhar entre grupos de amigos.',
+    sections: [
+      { title: 'Produto recreativo', text: 'A plataforma organiza palpites, ligas e ranking sem envolver apostas, odds ou movimentação financeira.' },
+      { title: 'Foco em grupos', text: 'Cada liga reúne participantes em um espaço próprio para acompanhar jogos, palpites e pontuação.' },
+      { title: 'Identidade clara', text: 'A marca CopaZone representa uma experiência independente para quem quer viver a Copa com amigos.' },
     ],
   },
 };
@@ -92,13 +106,51 @@ function removeElement(selector) {
   document.head.querySelector(selector)?.remove();
 }
 
-function Seo({ title, description = DEFAULT_DESCRIPTION, path, robots = 'index,follow' }) {
+function upsertJsonLd(id, data) {
+  let element = document.head.querySelector(`script[data-seo-jsonld="${id}"]`);
+
+  if (!element) {
+    element = document.createElement('script');
+    element.setAttribute('type', 'application/ld+json');
+    element.setAttribute('data-seo-jsonld', id);
+    document.head.appendChild(element);
+  }
+
+  element.textContent = JSON.stringify(data);
+}
+
+function removeJsonLd(id) {
+  document.head.querySelector(`script[data-seo-jsonld="${id}"]`)?.remove();
+}
+
+function breadcrumbStructuredData(page, path) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Início',
+        item: `${SITE_URL}/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: page.title,
+        item: `${SITE_URL}${path}`,
+      },
+    ],
+  };
+}
+
+function Seo({ title, description = DEFAULT_DESCRIPTION, path, robots = 'index,follow', structuredData }) {
   const location = useLocation();
 
   useEffect(() => {
     const currentPath = path || location.pathname;
     const canonicalUrl = currentPath === '/' ? `${SITE_URL}/` : `${SITE_URL}${currentPath}`;
-    const fullTitle = title ? `${title} | CopaZone` : 'CopaZone | Bolão da Copa do Mundo 2026';
+    const fullTitle = title ? `${title} | CopaZone` : 'CopaZone | Liga de Palpites da Copa do Mundo 2026';
     const isIndexable = !robots.toLowerCase().includes('noindex');
 
     document.title = fullTitle;
@@ -118,9 +170,16 @@ function Seo({ title, description = DEFAULT_DESCRIPTION, path, robots = 'index,f
     upsertMeta('meta[property="og:title"]', () => document.createElement('meta'), { property: 'og:title', content: fullTitle });
     upsertMeta('meta[property="og:description"]', () => document.createElement('meta'), { property: 'og:description', content: description });
     upsertMeta('meta[property="og:image"]', () => document.createElement('meta'), { property: 'og:image', content: DEFAULT_IMAGE });
+    upsertMeta('meta[property="og:image:width"]', () => document.createElement('meta'), { property: 'og:image:width', content: '1200' });
+    upsertMeta('meta[property="og:image:height"]', () => document.createElement('meta'), { property: 'og:image:height', content: '630' });
     upsertMeta('meta[name="twitter:card"]', () => document.createElement('meta'), { name: 'twitter:card', content: 'summary_large_image' });
     upsertMeta('meta[name="twitter:image"]', () => document.createElement('meta'), { name: 'twitter:image', content: DEFAULT_IMAGE });
-  }, [description, location.pathname, path, robots, title]);
+    if (structuredData) {
+      upsertJsonLd('route', structuredData);
+    } else {
+      removeJsonLd('route');
+    }
+  }, [description, location.pathname, path, robots, structuredData, title]);
 
   return null;
 }
@@ -141,16 +200,16 @@ function LandingPage() {
   return (
     <main className="landing-page">
       <Seo
-        title="Bolão da Copa do Mundo 2026"
-        description="Crie uma liga da Copa do Mundo 2026, convide amigos e acompanhe palpites e pontuação no CopaZone."
+        title="Liga de Palpites da Copa do Mundo 2026"
+        description={DEFAULT_DESCRIPTION}
         path="/"
       />
       <section className="landing-hero">
         <div>
           <p className="eyebrow">CopaZone</p>
-          <h1>Bolão da Copa do Mundo entre amigos</h1>
+          <h1>Liga de palpites da Copa do Mundo entre amigos</h1>
           <p>
-            Crie sua liga, convide participantes e acompanhe palpites e pontuação durante a Copa do Mundo.
+            Crie uma liga recreativa, convide participantes e acompanhe palpites e pontuação durante a Copa do Mundo.
           </p>
           <div className="landing-actions">
             <Link to="/login">Entrar</Link>
@@ -206,7 +265,7 @@ function LandingPage() {
               <span><b>12</b>Grupos</span>
             </div>
             <div className="preview-league-row">
-              <span>Bolão da Firma</span>
+              <span>Liga da Firma</span>
               <strong>Modo Copa</strong>
             </div>
             <div className="preview-league-row">
@@ -279,7 +338,7 @@ function HomeRoute({ user, isBooting }) {
 function PublicInfoPage({ page, path }) {
   return (
     <main className="landing-page public-info-page">
-      <Seo title={page.title} description={page.description} path={path} />
+      <Seo title={page.title} description={page.description} path={path} structuredData={breadcrumbStructuredData(page, path)} />
       <section className="public-info-shell">
         <Link to="/" className="public-back-link">
           CopaZone
@@ -310,6 +369,7 @@ function PublicInfoPage({ page, path }) {
           <Link to="/copa-do-mundo-2026">Copa 2026</Link>
           <Link to="/regras">Regras</Link>
           <Link to="/faq">FAQ</Link>
+          <Link to="/sobre-o-copazone">Sobre</Link>
         </nav>
       </section>
     </main>
@@ -415,7 +475,8 @@ function AppRoutes() {
 
   return (
     <>
-      <Routes>
+      <Suspense fallback={<GuardScreen title="Carregando CopaZone" />}>
+        <Routes>
         <Route path="/" element={<HomeRoute user={user} isBooting={isBooting} />} />
         {Object.entries(publicPages).map(([path, page]) => (
           <Route key={path} path={path} element={<PublicInfoPage page={page} path={path} />} />
@@ -561,7 +622,8 @@ function AppRoutes() {
           }
         />
         <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+        </Routes>
+      </Suspense>
       <Toaster richColors position="top-right" />
     </>
   );
