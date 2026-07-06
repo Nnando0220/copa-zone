@@ -90,6 +90,20 @@ class LeagueCreationAndJoinApiTest extends TestCase
         $this->assertArrayNotHasKey('reward_multiplier', $settingsJson);
     }
 
+    public function test_league_creation_rejects_more_than_thirty_two_members(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->postJsonWithCsrf('/api/v1/leagues', [
+                'name' => 'Liga Grande Demais',
+                'visibility' => 'public',
+                'max_members' => 33,
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('max_members');
+    }
+
     public function test_private_league_gets_automatic_invite_code_and_is_not_publicly_listed(): void
     {
         $owner = User::factory()->create();
@@ -173,6 +187,49 @@ class LeagueCreationAndJoinApiTest extends TestCase
             ->assertJsonPath('data.league.membership.role', 'participant');
     }
 
+    public function test_private_invite_code_is_only_returned_to_league_owner(): void
+    {
+        $owner = User::factory()->create();
+        $participant = User::factory()->create();
+        $league = League::create([
+            'owner_user_id' => $owner->id,
+            'name' => 'Liga com Convite',
+            'visibility' => 'private',
+            'join_policy' => 'invite_code',
+            'invite_code' => 'SAFE2026',
+            'status' => 'open',
+            'max_members' => 8,
+        ]);
+
+        LeagueMember::create([
+            'league_id' => $league->id,
+            'user_id' => $owner->id,
+            'role' => 'owner',
+            'status' => 'active',
+            'joined_at' => now(),
+        ]);
+
+        LeagueMember::create([
+            'league_id' => $league->id,
+            'user_id' => $participant->id,
+            'role' => 'participant',
+            'status' => 'active',
+            'joined_at' => now(),
+        ]);
+
+        $this->actingAs($owner)
+            ->getJson("/api/v1/leagues/{$league->id}")
+            ->assertOk()
+            ->assertJsonPath('data.league.invite_code', 'SAFE2026')
+            ->assertJsonPath('data.league.is_owner', true);
+
+        $this->actingAs($participant)
+            ->getJson("/api/v1/leagues/{$league->id}")
+            ->assertOk()
+            ->assertJsonPath('data.league.invite_code', null)
+            ->assertJsonPath('data.league.is_owner', false);
+    }
+
     public function test_user_can_preview_private_league_by_code_before_joining(): void
     {
         $owner = User::factory()->create(['name' => 'Gestor CopaZone']);
@@ -231,7 +288,7 @@ class LeagueCreationAndJoinApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.league.id', $league->id)
             ->assertJsonPath('meta.already_member', true)
-            ->assertJsonPath('message', 'Voce ja faz parte dessa liga.');
+            ->assertJsonPath('message', 'Você já faz parte dessa liga.');
     }
 
     public function test_user_cannot_join_same_league_twice(): void

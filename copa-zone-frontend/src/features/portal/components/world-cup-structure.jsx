@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   Check,
   Equal,
+  List,
   Flame,
   Lightbulb,
   Shield,
@@ -686,6 +687,10 @@ export function WorldCupBracketView({
       .map((code) => normalized.find((s) => s.code === code))
       .filter(Boolean);
 
+    const mobileStages = normalized
+      .filter((stage) => KNOCKOUT_STAGE_KEYS.includes(stage.code))
+      .sort((a, b) => KNOCKOUT_STAGE_KEYS.indexOf(a.code) - KNOCKOUT_STAGE_KEYS.indexOf(b.code));
+
     const leftCols = [];
     const rightCols = [];
 
@@ -695,8 +700,22 @@ export function WorldCupBracketView({
       rightCols.push({ ...stage, matches: stage.matches.slice(mid) });
     }
 
-    return { leftCols, rightCols: [...rightCols].reverse(), finalStage, thirdPlaceStage };
+    return { leftCols, rightCols: [...rightCols].reverse(), finalStage, thirdPlaceStage, mobileStages };
   }, [stages]);
+
+  const [activeMobileStageCode, setActiveMobileStageCode] = useState('');
+  const activeMobileStage = bracket.mobileStages.find((stage) => stage.code === activeMobileStageCode) || bracket.mobileStages[0] || null;
+
+  useEffect(() => {
+    if (!bracket.mobileStages.length) {
+      setActiveMobileStageCode('');
+      return;
+    }
+
+    if (!bracket.mobileStages.some((stage) => stage.code === activeMobileStageCode)) {
+      setActiveMobileStageCode(bracket.mobileStages[0].code);
+    }
+  }, [activeMobileStageCode, bracket.mobileStages]);
 
   if (!bracket.leftCols.length && !bracket.finalStage) {
     return <section className="empty-state compact">Nenhum chaveamento sincronizado ainda.</section>;
@@ -742,6 +761,32 @@ export function WorldCupBracketView({
       aria-label="Chaveamento da Copa"
       data-variant={allowPredictions ? 'interactive' : 'readonly'}
     >
+      <div className="bracket-mobile-panel" aria-label="Chaveamento em lista por fase">
+        <div className="bracket-mobile-panel-header">
+          <span><List size={16} /> Ver lista</span>
+          <small>Toque em uma fase para acompanhar os jogos sem arrastar a tabela completa.</small>
+        </div>
+        <div className="bracket-mobile-tabs" role="tablist" aria-label="Fases do chaveamento">
+          {bracket.mobileStages.map((stage) => (
+            <button
+              key={stage.code}
+              type="button"
+              role="tab"
+              aria-selected={activeMobileStage?.code === stage.code}
+              className={activeMobileStage?.code === stage.code ? 'active' : undefined}
+              onClick={() => setActiveMobileStageCode(stage.code)}
+            >
+              {stage.label}
+            </button>
+          ))}
+        </div>
+        {activeMobileStage ? (
+          <div className="bracket-mobile-match-list" role="tabpanel" aria-label={activeMobileStage.label}>
+            {activeMobileStage.matches.map((match, index) => renderCard(match, activeMobileStage, index))}
+          </div>
+        ) : null}
+      </div>
+      <p className="bracket-scroll-hint">Deslize para ver o chaveamento completo</p>
       <div
         className="copa-bracket-board"
         style={{ '--left-cols': bracket.leftCols.length || 1, '--right-cols': bracket.rightCols.length || 1 }}

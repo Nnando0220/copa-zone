@@ -1,8 +1,6 @@
 const PERIODS = [
-  { value: 'all', label: 'Todas' },
-  { value: 'current', label: 'Atuais' },
-  { value: 'upcoming', label: 'Próximas' },
-  { value: 'today', label: 'Hoje' },
+  { value: 'today', label: 'Jogos do dia' },
+  { value: 'upcoming', label: 'Proximas partidas' },
   { value: 'finished', label: 'Finalizadas' },
 ];
 

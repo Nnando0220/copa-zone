@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
-import { KeyRound, LogOut, Trophy, UserPlus, Users } from 'lucide-react';
+import { Copy, Eye, EyeOff, KeyRound, Link2, LogOut, UserPlus, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { MatchList } from '../components/match-list';
 import { MatchPeriodFilter } from '../components/match-period-filter';
@@ -13,19 +13,21 @@ export function LeagueDetailPage() {
   const [league, setLeague] = useState(null);
   const [matches, setMatches] = useState([]);
   const [matchesTotal, setMatchesTotal] = useState(0);
-  const [period, setPeriod] = useState('all');
+  const [period, setPeriod] = useState('today');
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMatches, setIsLoadingMatches] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
+  const [isInviteVisible, setIsInviteVisible] = useState(false);
   const [error, setError] = useState('');
+  const inviteLink = league?.invite_code ? `${window.location.origin}/ligas/entrar?codigo=${league.invite_code}` : '';
 
   useEffect(() => {
     portalService.leagueDetails(leagueId)
       .then((leaguePayload) => {
         setLeague(leaguePayload.data.league);
       })
-      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar a liga.'))
+      .catch((requestError) => setError(requestError.message || 'Nao foi possivel carregar a liga.'))
       .finally(() => setIsLoading(false));
   }, [leagueId]);
 
@@ -36,7 +38,7 @@ export function LeagueDetailPage() {
         setMatches(matchesPayload.data.matches ?? []);
         setMatchesTotal(matchesPayload.meta?.total ?? 0);
       })
-      .catch((requestError) => setError(requestError.message || 'Não foi possível carregar as partidas da liga.'))
+      .catch((requestError) => setError(requestError.message || 'Nao foi possivel carregar as partidas da liga.'))
       .finally(() => setIsLoadingMatches(false));
   }, [leagueId, period]);
 
@@ -49,7 +51,7 @@ export function LeagueDetailPage() {
       setLeague(payload.data.league);
       toast.success('Entrada realizada com sucesso.');
     } catch (requestError) {
-      setError(requestError.message || 'Não foi possível entrar nesta liga.');
+      setError(requestError.message || 'Nao foi possivel entrar nesta liga.');
     } finally {
       setIsJoining(false);
     }
@@ -62,12 +64,21 @@ export function LeagueDetailPage() {
     try {
       const payload = await portalService.leaveLeague(leagueId);
       setLeague(payload.data.league);
-      toast.success('Você saiu da liga.');
+      toast.success('Voce saiu da liga.');
       navigate('/ligas/publicas');
     } catch (requestError) {
-      setError(requestError.message || 'Não foi possível sair desta liga.');
+      setError(requestError.message || 'Nao foi possivel sair desta liga.');
     } finally {
       setIsLeaving(false);
+    }
+  }
+
+  async function copyInvite(value, label) {
+    try {
+      await navigator.clipboard.writeText(value);
+      toast.success(`${label} copiado.`);
+    } catch {
+      toast.error('Nao foi possivel copiar automaticamente.');
     }
   }
 
@@ -83,27 +94,21 @@ export function LeagueDetailPage() {
     <section className="league-detail-page">
       <LeagueCard league={league} actionLabel={league.membership ? 'Abrir modo Copa' : 'Ver dados da liga'} to={league.membership ? `/ligas/${leagueId}/copa` : undefined} />
 
-      <div className="league-detail-actions">
-        {league.membership ? (
-          <>
-            <Link className="primary-action" to={`/ligas/${leagueId}/copa`}>
-              <Trophy size={18} />
-              Abrir modo Copa
-            </Link>
-            {!league.is_owner && (
-              <button type="button" className="secondary-action danger" onClick={leaveLeague} disabled={isLeaving}>
-                <LogOut size={18} />
-                {isLeaving ? 'Saindo...' : 'Sair da liga'}
-              </button>
-            )}
-          </>
-        ) : (
+      {(!league.membership || !league.is_owner) && (
+        <div className="league-detail-actions">
+          {league.membership ? (
+            <button type="button" className="secondary-action danger" onClick={leaveLeague} disabled={isLeaving}>
+              <LogOut size={18} />
+              {isLeaving ? 'Saindo...' : 'Sair da liga'}
+            </button>
+          ) : (
           <button type="button" className="primary-action" onClick={joinLeague} disabled={isJoining}>
             <UserPlus size={18} />
             {isJoining ? 'Entrando...' : 'Entrar na liga'}
           </button>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       <div className="league-detail-grid">
         <article>
@@ -114,25 +119,54 @@ export function LeagueDetailPage() {
           </strong>
         </article>
 
-        {league.invite_code && (
-          <article>
-            <KeyRound size={22} />
-            <span>Código privado</span>
-            <strong>{league.invite_code}</strong>
-          </article>
-        )}
-
         <article>
           <span>Pontos por acerto</span>
           <strong>{league.settings?.points_correct_outcome ?? 3}</strong>
         </article>
       </div>
 
+      {league.is_owner && league.invite_code && (
+        <section className="owner-invite-panel">
+          <div className="owner-invite-header">
+            <KeyRound size={22} />
+            <div>
+              <p className="eyebrow">Convite privado</p>
+              <h2>Compartilhe sua liga com seguranca</h2>
+              <span>Somente o dono da liga consegue ver este codigo e o link de convite.</span>
+            </div>
+            <button type="button" className="secondary-action" onClick={() => setIsInviteVisible((current) => !current)}>
+              {isInviteVisible ? <EyeOff size={17} /> : <Eye size={17} />}
+              {isInviteVisible ? 'Ocultar' : 'Mostrar'}
+            </button>
+          </div>
+
+          <div className="owner-invite-grid">
+            <article>
+              <span><KeyRound size={16} /> Codigo da liga</span>
+              <strong>{isInviteVisible ? league.invite_code : '********'}</strong>
+              <button type="button" onClick={() => copyInvite(league.invite_code, 'Codigo')} disabled={!isInviteVisible}>
+                <Copy size={16} />
+                Copiar codigo
+              </button>
+            </article>
+
+            <article>
+              <span><Link2 size={16} /> Link para compartilhar</span>
+              <strong>{isInviteVisible ? inviteLink : '************************'}</strong>
+              <button type="button" onClick={() => copyInvite(inviteLink, 'Link')} disabled={!isInviteVisible}>
+                <Copy size={16} />
+                Copiar link
+              </button>
+            </article>
+          </div>
+        </section>
+      )}
+
       <div className="content-section league-matches-section">
         <div className="section-header">
           <div>
             <p className="eyebrow">Partidas da Copa</p>
-            <h2>Calendário da Copa</h2>
+            <h2>Calendario da Copa</h2>
           </div>
           <span className="diagnostic-pill">Palpites em breve</span>
         </div>
@@ -142,8 +176,8 @@ export function LeagueDetailPage() {
       </div>
 
       <div className="empty-state compact">
-        <h2>Próxima etapa da liga</h2>
-        <p>Em breve você poderá acompanhar todos os palpites diretamente pela página da Copa.</p>
+        <h2>Proxima etapa da liga</h2>
+        <p>Em breve voce podera acompanhar todos os palpites diretamente pela pagina da Copa.</p>
         <Link to="/ligas/minhas">Voltar para minhas ligas</Link>
       </div>
     </section>

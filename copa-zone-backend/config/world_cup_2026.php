@@ -67,22 +67,22 @@ return [
             'display_name' => 'Semifinal',
             'order' => 4,
             'matches' => [
-                ['order' => 1, 'home_label' => 'Vencedor QF-01', 'away_label' => 'Vencedor QF-02', 'source_matches' => [1, 2]],
-                ['order' => 2, 'home_label' => 'Vencedor QF-03', 'away_label' => 'Vencedor QF-04', 'source_matches' => [3, 4]],
+                ['order' => 1, 'home_label' => 'Vencedor QF-01', 'away_label' => 'Vencedor QF-02', 'source_matches' => [1, 2], 'starts_at' => '2026-07-14T14:00:00-05:00'],
+                ['order' => 2, 'home_label' => 'Vencedor QF-03', 'away_label' => 'Vencedor QF-04', 'source_matches' => [3, 4], 'starts_at' => '2026-07-15T15:00:00-04:00'],
             ],
         ],
         'third_place' => [
             'display_name' => 'Terceiro lugar',
             'order' => 5,
             'matches' => [
-                ['order' => 1, 'home_label' => 'Perdedor SF-01', 'away_label' => 'Perdedor SF-02', 'source_matches' => [1, 2]],
+                ['order' => 1, 'home_label' => 'Perdedor SF-01', 'away_label' => 'Perdedor SF-02', 'source_matches' => [1, 2], 'starts_at' => '2026-07-18T17:00:00-04:00'],
             ],
         ],
         'final' => [
             'display_name' => 'Final',
             'order' => 6,
             'matches' => [
-                ['order' => 1, 'home_label' => 'Vencedor SF-01', 'away_label' => 'Vencedor SF-02', 'source_matches' => [1, 2]],
+                ['order' => 1, 'home_label' => 'Vencedor SF-01', 'away_label' => 'Vencedor SF-02', 'source_matches' => [1, 2], 'starts_at' => '2026-07-19T15:00:00-04:00'],
             ],
         ],
     ],

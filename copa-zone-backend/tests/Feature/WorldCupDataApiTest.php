@@ -650,6 +650,33 @@ class WorldCupDataApiTest extends TestCase
             ->assertJsonPath('data.bracket.stages.5.matches.0.id', null);
     }
 
+    public function test_bracket_placeholders_keep_official_late_stage_dates_until_provider_match_exists(): void
+    {
+        $user = User::factory()->create();
+
+        TournamentEdition::create([
+            'name' => 'WM 2026',
+            'season' => 2026,
+            'provider' => 'openligadb',
+            'provider_league_id' => 'wm26',
+            'status' => 'synced',
+            'last_synced_at' => now(),
+        ]);
+
+        $this->actingAs($user)
+            ->getJson('/api/v1/world-cup/bracket')
+            ->assertOk()
+            ->assertJsonPath('data.bracket.stages.3.code', 'semifinal')
+            ->assertJsonPath('data.bracket.stages.3.matches.0.id', null)
+            ->assertJsonPath('data.bracket.stages.3.matches.0.starts_at_br', '2026-07-14T16:00:00-03:00')
+            ->assertJsonPath('data.bracket.stages.3.matches.0.can_predict', false)
+            ->assertJsonPath('data.bracket.stages.3.matches.1.starts_at_br', '2026-07-15T16:00:00-03:00')
+            ->assertJsonPath('data.bracket.stages.4.code', 'third_place')
+            ->assertJsonPath('data.bracket.stages.4.matches.0.starts_at_br', '2026-07-18T18:00:00-03:00')
+            ->assertJsonPath('data.bracket.stages.5.code', 'final')
+            ->assertJsonPath('data.bracket.stages.5.matches.0.starts_at_br', '2026-07-19T16:00:00-03:00');
+    }
+
     public function test_bracket_matches_composite_team_codes_to_their_source_slot(): void
     {
         $user = User::factory()->create();

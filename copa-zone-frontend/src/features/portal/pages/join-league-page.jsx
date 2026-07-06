@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ArrowLeft, KeyRound, Trophy } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
@@ -13,6 +13,7 @@ function normalizeInviteCode(value) {
 
 export function JoinLeaguePage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const inputRef = useRef(null);
   const clearAnimationTimer = useRef(null);
   const [inviteCode, setInviteCode] = useState('');
@@ -27,6 +28,15 @@ export function JoinLeaguePage() {
   const canFindLeague = normalizedCode.length === CODE_SIZE && !isPreviewing && !isJoining;
   const previewLeague = preview?.data?.league;
   const alreadyMember = preview?.meta?.already_member;
+
+  useEffect(() => {
+    const codeFromLink = searchParams.get('codigo') || searchParams.get('code') || '';
+
+    if (codeFromLink) {
+      updateInviteCode(codeFromLink);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   useEffect(() => () => window.clearTimeout(clearAnimationTimer.current), []);
 

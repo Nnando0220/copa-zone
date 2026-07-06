@@ -19,7 +19,7 @@ export function WorldCupDataPage() {
   const [matches, setMatches] = useState([]);
   const [activeTab, setActiveTab] = useState('summary');
   const [activeGroupCode, setActiveGroupCode] = useState('');
-  const [period, setPeriod] = useState('all');
+  const [period, setPeriod] = useState('today');
   const [matchesTotal, setMatchesTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMatches, setIsLoadingMatches] = useState(false);

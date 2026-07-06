@@ -7,6 +7,7 @@ use App\Http\Resources\WorldCupMatchResource;
 use App\Models\Team;
 use App\Models\WorldCupMatch;
 use App\Support\OpenLigaDbTranslationService;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -206,13 +207,16 @@ class WorldCup2026StructureService
      */
     private function placeholderMatch(string $stageCode, array $stage, array $template, string $slotHome, string $slotAway): array
     {
+        $startsAt = $this->templateStartsAt($template);
+        $displayTimezone = (string) config('services.openligadb.display_timezone', 'America/Sao_Paulo');
+
         return [
             'id' => null,
             'provider_fixture_id' => null,
-            'starts_at' => null,
-            'starts_at_br' => null,
-            'lock_at' => null,
-            'timezone' => (string) config('services.openligadb.display_timezone', 'America/Sao_Paulo'),
+            'starts_at' => $startsAt,
+            'starts_at_br' => $startsAt?->copy()->timezone($displayTimezone)->toIso8601String(),
+            'lock_at' => $startsAt,
+            'timezone' => $displayTimezone,
             'provider_timezone' => null,
             'venue_name' => null,
             'round' => $stage['display_name'],
@@ -240,6 +244,17 @@ class WorldCup2026StructureService
             'home_team' => null,
             'away_team' => null,
         ];
+    }
+
+    private function templateStartsAt(array $template): ?CarbonImmutable
+    {
+        $value = $template['starts_at'] ?? null;
+
+        if (! is_string($value) || trim($value) === '') {
+            return null;
+        }
+
+        return CarbonImmutable::parse($value)->utc();
     }
 
     private function findMatchForTemplate(Collection $matches, array $pool, array $usedMatchIds): ?WorldCupMatch
